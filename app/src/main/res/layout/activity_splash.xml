@@ -10,4 +10,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.rose_hulman.crowleaj.subscribed.SplashActivity">
 
+    <TextView
+        android:text="SUBSCRIBED"
+        android:textSize="48sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView2" />
+    <Button
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SIGN IN"></Button>
 </RelativeLayout>
