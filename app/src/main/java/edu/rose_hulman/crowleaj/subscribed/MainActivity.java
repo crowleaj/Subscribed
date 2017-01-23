@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mAdapter = new SubscriptionAdapter();
+        mAdapter = new SubscriptionAdapter(this);
         recyclerView.setAdapter(mAdapter);
 
         // Initialize credentials and service object.

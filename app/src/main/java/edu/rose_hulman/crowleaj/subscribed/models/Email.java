@@ -10,6 +10,8 @@ public class Email implements Comparable {
 
     Date date;
     public String subject;
+    public String sender;
+    public String content;
 
     public Date getDate() {
         return date;
@@ -18,5 +20,9 @@ public class Email implements Comparable {
     @Override
     public int compareTo(Object o) {
         return date.compareTo(((Email)o).getDate());
+    }
+
+    public String getSender() {
+        return sender;
     }
 }

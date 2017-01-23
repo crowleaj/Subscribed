@@ -14,6 +14,10 @@ public class Subscription {
     String title;
     String date;
 
+    public Subscription(String subTitle) {
+        title = subTitle;
+    }
+
     public String getNewestSubject() {
         if (mEmails.size() > 0) {
             return mEmails.get(0).subject;

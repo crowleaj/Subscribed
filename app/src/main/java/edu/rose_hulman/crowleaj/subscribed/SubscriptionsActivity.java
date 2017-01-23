@@ -28,9 +28,9 @@ public class SubscriptionsActivity extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mAdapter = new SubscriptionAdapter();
-        recyclerView.setAdapter(mAdapter);
+//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+//        mAdapter = new SubscriptionAdapter();
+//        recyclerView.setAdapter(mAdapter);
     }
 
 }

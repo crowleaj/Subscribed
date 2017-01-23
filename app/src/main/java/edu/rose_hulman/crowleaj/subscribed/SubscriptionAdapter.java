@@ -28,7 +28,7 @@ import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 
 public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapter.ViewHolder> {
 
-    private ArrayList<Subscription> mSubscriptions;
+    private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
     private Context mContext;
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -48,6 +48,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     public SubscriptionAdapter(Context context) {
         mContext = context;
+        //populateSubscriptions();
     }
 
     @Override
@@ -80,5 +81,21 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        mSubscriptions.add(new Subscription(emails.get(0).getSender()));
+//        mSubscriptions.get(0).addEmail(emails.get(0));
+        boolean didContain;
+//        for (int i = 1; i < emails.size(); i++) {
+//            didContain = false;
+//            for (int j = 0; j < mSubscriptions.size(); j++) {
+//                if (mSubscriptions.get(j).getTitle().equals(emails.get(i).getSender())) {
+//                    mSubscriptions.get(j).addEmail(emails.get(i));
+//                    didContain = true;
+//                }
+//            }
+//            if (!didContain) {
+//                mSubscriptions.add(new Subscription(emails.get(i).getSender()));
+//                mSubscriptions.get(mSubscriptions.size()-1).addEmail(emails.get(i));
+//            }
+//        }
     }
 }
