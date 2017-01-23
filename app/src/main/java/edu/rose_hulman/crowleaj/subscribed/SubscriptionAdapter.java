@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -18,9 +19,15 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private ArrayList<Subscription> mSubscriptions;
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView mSubscription;
+        private TextView mSubscriptionCount;
+        private TextView mSubscriptionPreview;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            mSubscription = (TextView) itemView.findViewById(R.id.subscription_title);
+            mSubscriptionCount = (TextView) itemView.findViewById(R.id.subscription_count);
+            mSubscriptionPreview = (TextView) itemView.findViewById(R.id.subscription_preview);
         }
     }
 
@@ -32,7 +39,9 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        holder.mSubscription.setText(mSubscriptions.get(position).getTitle());
+        holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize());
+        holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
     }
 
     @Override

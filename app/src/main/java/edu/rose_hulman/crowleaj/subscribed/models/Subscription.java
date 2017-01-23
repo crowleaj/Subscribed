@@ -11,6 +11,7 @@ import java.util.Date;
 public class Subscription {
 
     ArrayList<Email> mEmails = new ArrayList<>();
+    String title;
 
     public String getNewestSubject() {
         if (mEmails.size() > 0) {
@@ -22,5 +23,13 @@ public class Subscription {
     public void addEmail(Email email) {
         mEmails.add(email);
         Collections.sort(mEmails);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getSize() {
+        return mEmails.size();
     }
 }
