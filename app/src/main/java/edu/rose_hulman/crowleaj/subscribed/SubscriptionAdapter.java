@@ -22,12 +22,14 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         private TextView mSubscription;
         private TextView mSubscriptionCount;
         private TextView mSubscriptionPreview;
+        private TextView mSubscriptionDate;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mSubscription = (TextView) itemView.findViewById(R.id.subscription_title);
             mSubscriptionCount = (TextView) itemView.findViewById(R.id.subscription_count);
             mSubscriptionPreview = (TextView) itemView.findViewById(R.id.subscription_preview);
+            mSubscriptionDate = (TextView) itemView.findViewById(R.id.subscription_date);
         }
     }
 
@@ -42,6 +44,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.mSubscription.setText(mSubscriptions.get(position).getTitle());
         holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize());
         holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
+        holder.mSubscriptionDate.setText(mSubscriptions.get(position).getDate());
     }
 
     @Override

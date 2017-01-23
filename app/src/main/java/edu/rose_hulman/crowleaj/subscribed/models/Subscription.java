@@ -12,6 +12,7 @@ public class Subscription {
 
     ArrayList<Email> mEmails = new ArrayList<>();
     String title;
+    String date;
 
     public String getNewestSubject() {
         if (mEmails.size() > 0) {
@@ -31,5 +32,9 @@ public class Subscription {
 
     public int getSize() {
         return mEmails.size();
+    }
+
+    public String getDate() {
+        return date;
     }
 }
