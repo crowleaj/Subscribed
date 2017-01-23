@@ -41,4 +41,13 @@ public class Subscription {
     public String getDate() {
         return date;
     }
+
+    public ArrayList<Email> getMatchingEmails(String query) {
+        ArrayList<Email> clintonEmails = new ArrayList<>();
+        for (Email email : mEmails) {
+            if (email.content.contains(query))
+                clintonEmails.add(email);
+        }
+        return clintonEmails;
+    }
 }
