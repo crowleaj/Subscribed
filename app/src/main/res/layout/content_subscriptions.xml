@@ -13,4 +13,6 @@
     tools:context="edu.rose_hulman.crowleaj.subscribed.SubscriptionsActivity"
     tools:showIn="@layout/activity_subscriptions">
 
+
+
 </RelativeLayout>
