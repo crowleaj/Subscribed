@@ -19,7 +19,7 @@ public class Email implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return date.compareTo(((Email)o).getDate());
+        return ((Email)o).getDate().compareTo(date);// date.compareTo(((Email)o).getDate());
     }
 
     public String getSender() {

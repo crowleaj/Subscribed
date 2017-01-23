@@ -2,12 +2,14 @@ package edu.rose_hulman.crowleaj.subscribed;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
@@ -17,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
@@ -48,7 +51,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     public SubscriptionAdapter(Context context) {
         mContext = context;
-        //populateSubscriptions();
+        populateSubscriptions();
     }
 
     @Override
@@ -60,7 +63,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mSubscription.setText(mSubscriptions.get(position).getTitle());
-        holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize());
+        holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize() + "");
         holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
         holder.mSubscriptionDate.setText(mSubscriptions.get(position).getDate());
     }
@@ -71,31 +74,34 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
     public void populateSubscriptions() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setDateFormat("M/d/yyyy").create();
         Type listType = new TypeToken<List<Email>>(){}.getType();
         InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
         Reader reader = new BufferedReader(new InputStreamReader(is));
         List<Email> emails = gson.fromJson(reader, listType);
+        Collections.sort(emails);
         try {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        mSubscriptions.add(new Subscription(emails.get(0).getSender()));
-//        mSubscriptions.get(0).addEmail(emails.get(0));
+        Log.d("TAG", emails.get(0).getDate().toString());
+        mSubscriptions.add(new Subscription(emails.get(0).getSender()));
+        mSubscriptions.get(0).addEmail(emails.get(0));
+        Log.d("TAG", mSubscriptions.get(0).getTitle());
         boolean didContain;
-//        for (int i = 1; i < emails.size(); i++) {
-//            didContain = false;
-//            for (int j = 0; j < mSubscriptions.size(); j++) {
-//                if (mSubscriptions.get(j).getTitle().equals(emails.get(i).getSender())) {
-//                    mSubscriptions.get(j).addEmail(emails.get(i));
-//                    didContain = true;
-//                }
-//            }
-//            if (!didContain) {
-//                mSubscriptions.add(new Subscription(emails.get(i).getSender()));
-//                mSubscriptions.get(mSubscriptions.size()-1).addEmail(emails.get(i));
-//            }
-//        }
+        for (int i = 1; i < emails.size(); i++) {
+            didContain = false;
+            for (int j = 0; j < mSubscriptions.size(); j++) {
+                if (mSubscriptions.get(j).getTitle().equals(emails.get(i).getSender())) {
+                    mSubscriptions.get(j).addEmail(emails.get(i));
+                    didContain = true;
+                }
+            }
+            if (!didContain) {
+                mSubscriptions.add(new Subscription(emails.get(i).getSender()));
+                mSubscriptions.get(mSubscriptions.size()-1).addEmail(emails.get(i));
+            }
+        }
     }
 }
