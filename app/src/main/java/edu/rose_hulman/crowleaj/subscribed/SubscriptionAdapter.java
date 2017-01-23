@@ -1,13 +1,25 @@
 package edu.rose_hulman.crowleaj.subscribed;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 
 /**
@@ -17,6 +29,7 @@ import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapter.ViewHolder> {
 
     private ArrayList<Subscription> mSubscriptions;
+    private Context mContext;
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mSubscription;
@@ -31,6 +44,10 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             mSubscriptionPreview = (TextView) itemView.findViewById(R.id.subscription_preview);
             mSubscriptionDate = (TextView) itemView.findViewById(R.id.subscription_date);
         }
+    }
+
+    public SubscriptionAdapter(Context context) {
+        mContext = context;
     }
 
     @Override
@@ -52,4 +69,16 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         return mSubscriptions.size();
     }
 
+    public void populateSubscriptions() {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Email>>(){}.getType();
+        InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
+        Reader reader = new BufferedReader(new InputStreamReader(is));
+        List<Email> emails = gson.fromJson(reader, listType);
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
