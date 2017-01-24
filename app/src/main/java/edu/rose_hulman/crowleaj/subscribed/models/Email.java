@@ -1,5 +1,6 @@
 package edu.rose_hulman.crowleaj.subscribed.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -15,6 +16,11 @@ public class Email implements Comparable {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getFormattedDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("M/d/yy");
+        return formatter.format(date);
     }
 
     @Override

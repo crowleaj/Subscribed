@@ -79,7 +79,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
     public void populateSubscriptions() {
-        Gson gson = new GsonBuilder().setDateFormat("M/d/yyyy").create();
+        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
         Type listType = new TypeToken<List<Email>>(){}.getType();
         InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
         Reader reader = new BufferedReader(new InputStreamReader(is));
@@ -90,7 +90,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("TAG", emails.get(0).getDate().toString());
+        //Log.d("TAG", emails.get(0).getDate().toString());
         mSubscriptions.add(new Subscription(emails.get(0).getSender()));
         mSubscriptions.get(0).addEmail(emails.get(0));
         Log.d("TAG", mSubscriptions.get(0).getTitle());

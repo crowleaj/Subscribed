@@ -1,5 +1,7 @@
 package edu.rose_hulman.crowleaj.subscribed.models;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -12,7 +14,7 @@ public class Subscription {
 
     ArrayList<Email> mEmails = new ArrayList<>();
     String title;
-    String date;
+    Date date;
     public int clicks;
     boolean favorited;
 
@@ -41,7 +43,7 @@ public class Subscription {
     }
 
     public String getDate() {
-        return "";
+        return mEmails.get(0).getFormattedDate();
     }
 
     public ArrayList<Email> getMatchingEmails(String query) {
