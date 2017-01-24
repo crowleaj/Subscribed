@@ -41,7 +41,7 @@ public class Subscription {
     }
 
     public String getDate() {
-        return date;
+        return "";
     }
 
     public ArrayList<Email> getMatchingEmails(String query) {

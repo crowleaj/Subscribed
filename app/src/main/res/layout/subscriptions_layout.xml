@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/subscription_title"
             android:text="Subscription"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:layout_alignParentTop="true" />
 
         <TextView
@@ -23,7 +23,7 @@
             android:layout_toEndOf="@+id/subscription_title"
             android:layout_marginStart="16dp"
             android:id="@+id/subscription_count"
-            android:textSize="24sp"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:text="Preview of the subscription"
@@ -36,7 +36,7 @@
 
         <TextView
             android:text="0/0/0"
-            android:textSize="24dp"
+            android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
