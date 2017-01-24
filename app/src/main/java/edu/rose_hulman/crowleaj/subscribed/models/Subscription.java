@@ -13,7 +13,7 @@ public class Subscription {
     ArrayList<Email> mEmails = new ArrayList<>();
     String title;
     String date;
-    int clicks;
+    public int clicks;
     boolean favorited;
 
     public Subscription(String subTitle) {

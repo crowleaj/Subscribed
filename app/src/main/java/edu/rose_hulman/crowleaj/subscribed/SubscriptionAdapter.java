@@ -50,7 +50,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
         @Override
         public void onClick(View v) {
-
+            mSubscriptions.get(getAdapterPosition()).clicks++;
         }
     }
 
