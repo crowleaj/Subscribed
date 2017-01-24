@@ -34,7 +34,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
     private Context mContext;
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSubscription;
         private TextView mSubscriptionCount;
         private TextView mSubscriptionPreview;
@@ -46,6 +46,11 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             mSubscriptionCount = (TextView) itemView.findViewById(R.id.subscription_count);
             mSubscriptionPreview = (TextView) itemView.findViewById(R.id.subscription_preview);
             mSubscriptionDate = (TextView) itemView.findViewById(R.id.subscription_date);
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 

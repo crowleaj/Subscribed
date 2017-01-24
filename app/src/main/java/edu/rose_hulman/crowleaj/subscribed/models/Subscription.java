@@ -13,6 +13,8 @@ public class Subscription {
     ArrayList<Email> mEmails = new ArrayList<>();
     String title;
     String date;
+    int clicks;
+    boolean favorited;
 
     public Subscription(String subTitle) {
         title = subTitle;
@@ -43,11 +45,15 @@ public class Subscription {
     }
 
     public ArrayList<Email> getMatchingEmails(String query) {
-        ArrayList<Email> clintonEmails = new ArrayList<>();
+        ArrayList<Email> emails = new ArrayList<>();
         for (Email email : mEmails) {
             if (email.content.contains(query))
-                clintonEmails.add(email);
+                emails.add(email);
         }
-        return clintonEmails;
+        return emails;
+    }
+
+    public boolean isFavorited() {
+        return favorited;
     }
 }
