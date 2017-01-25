@@ -1,7 +1,7 @@
 # Subscribed
 Android organizaition app for email subscriptions
 
-Useful links for project development
+## Useful links for project development
 
 Gmail API Android QuickStart:
 
