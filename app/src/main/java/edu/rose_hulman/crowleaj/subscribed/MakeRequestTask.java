@@ -5,6 +5,8 @@ package edu.rose_hulman.crowleaj.subscribed;
  */
 
 import android.app.Activity;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,7 +30,9 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * An asynchronous task that handles the Gmail API call.
@@ -74,15 +78,41 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
         List<String> labels = new ArrayList<String>();
 //        ListLabelsResponse listResponse =
 //                mService.users().labels().list(user).execute();
+        //"E, dd MM YYYY HH:mm:ss Z"
+        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+        DateFormat df2 = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+
         ListMessagesResponse listResponse = mService.users().messages().list(user).setQ("unsubscribe").execute();
         for (Message message : listResponse.getMessages()) {
             Message m = mService.users().messages().get("me", message.getId()).execute();
             MessagePart part = m.getPayload();
 //            if (part != null)
+            Date date;
+            String subject;
+            String sender;
+            String content;
             for (MessagePartHeader header : part.getHeaders() ) {
                 if (header.getName().equals("From")) {
-                    labels.add(header.getValue());
-                } //else {
+                    sender = header.getValue();
+                } else if (header.getName().equals("Subject")) {
+                    subject = header.getValue();
+                } else if (header.getName().equals("Date")) {
+                    try {
+                        date = df.parse(header.getValue());
+                        //Log.d("ASDF",header.getValue());
+                    } catch (Exception e) {
+                        try {
+
+                        date = df2.parse(header.getValue());
+                        }
+                        catch (Exception e1) {
+                            Log.e("ERR", e1.getMessage());
+                        }
+                    }
+
+                    //Log.d("ASDF",header.getValue());
+                }
+//                else {
 //                    Log.d("ASDF",header.getName());
 //                }
             }

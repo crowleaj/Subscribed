@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class Email implements Comparable, Parcelable {
 
-    Date date;
+    public Date date;
     public String subject;
     public String sender;
     public String content;
