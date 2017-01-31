@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
 
-    private static final String[] SCOPES = { GmailScopes.GMAIL_LABELS };
+    private static final String[] SCOPES = { GmailScopes.GMAIL_LABELS, GmailScopes.GMAIL_READONLY };
 
 
     GoogleAccountCredential mCredential;
@@ -88,11 +88,11 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
 
 
-        // Initialize credentials and service object.
-//        mCredential = GoogleAccountCredential.usingOAuth2(
-//                getApplicationContext(), Arrays.asList(SCOPES))
-//                .setBackOff(new ExponentialBackOff());
-//        //chooseAccount();
+        //Initialize credentials and service object.
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
+        chooseAccount();
 //        getResultsFromApi();
 
     }
@@ -252,7 +252,9 @@ public class MainActivity extends AppCompatActivity
         } else if (! isDeviceOnline()) {
             // mOutputText.setText("No network connection available.");
         } else {
-            // new MakeRequestTask(mCredential).execute();
+            Log.d("ASDF", mCredential.getSelectedAccountName());
+
+            new MakeRequestTask(mCredential, this).execute();
         }
     }
 
