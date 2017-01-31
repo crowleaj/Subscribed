@@ -68,7 +68,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mSubscription.setText(mSubscriptions.get(position).getTitle());
         holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize() + "");
         holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
@@ -76,7 +76,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.mSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallback.Callback();
+                mCallback.Callback(mSubscriptions.get(position).getEmails());
             }
         });
     }

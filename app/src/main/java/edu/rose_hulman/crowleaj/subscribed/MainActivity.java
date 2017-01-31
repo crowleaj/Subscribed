@@ -33,8 +33,10 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.gmail.GmailScopes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -297,9 +299,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void Callback() {
+    public void Callback(ArrayList<Email> emails) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        SpecificFragment fragment = SpecificFragment.newInstance();
+        SpecificFragment fragment = SpecificFragment.newInstance(emails);
         ft.replace(R.id.drawer_layout, fragment);
         ft.addToBackStack("detail");
         ft.commit();

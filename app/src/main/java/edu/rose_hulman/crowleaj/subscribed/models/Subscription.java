@@ -55,6 +55,10 @@ public class Subscription {
         return emails;
     }
 
+    public ArrayList<Email> getEmails() {
+        return mEmails;
+    }
+
     public boolean isFavorited() {
         return favorited;
     }

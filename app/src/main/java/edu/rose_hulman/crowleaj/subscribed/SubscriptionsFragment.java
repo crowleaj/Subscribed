@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
+import edu.rose_hulman.crowleaj.subscribed.models.Email;
+
 
 /**
  * A fragment representing a list of Items.
@@ -96,7 +100,7 @@ public class SubscriptionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface Callback {
-        void Callback();
+        void Callback(ArrayList<Email> emails);
     }
 
 }

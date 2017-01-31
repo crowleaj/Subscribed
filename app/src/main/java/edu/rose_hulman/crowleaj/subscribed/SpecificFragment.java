@@ -4,9 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+
+import edu.rose_hulman.crowleaj.subscribed.models.Email;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +25,7 @@ import android.view.ViewGroup;
 public class SpecificFragment extends android.support.v4.app.Fragment {
 
     private OnSpecificCallback mListener;
+    public SpecificAdapter mAdapter;
 
     public SpecificFragment() {
         // Required empty public constructor
@@ -28,9 +36,10 @@ public class SpecificFragment extends android.support.v4.app.Fragment {
      * this fragment using the provided parameters.
      *
      */
-    public static SpecificFragment newInstance() {
+    public static SpecificFragment newInstance(ArrayList<Email> emails) {
         SpecificFragment fragment = new SpecificFragment();
         Bundle args = new Bundle();
+        args.putParcelableArrayList("key", emails);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,7 +53,15 @@ public class SpecificFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_specific, container, false);
+        View view = inflater.inflate(R.layout.fragment_specific, container, false);
+        //Recycler View
+        RecyclerView list = (RecyclerView) view.findViewById(R.id.recycler_specific);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        list.setLayoutManager(manager);
+        mAdapter = new SpecificAdapter(getArguments().<Email>getParcelableArrayList("key"));
+        list.setAdapter(mAdapter);
+        return view;
     }
 
 
