@@ -19,6 +19,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.StringUtils;
 import com.google.api.services.gmail.model.Label;
 import com.google.api.services.gmail.model.ListLabelsResponse;
 import com.google.api.services.gmail.model.ListMessagesResponse;
@@ -90,7 +92,9 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
             Date date;
             String subject;
             String sender;
-            String content = part.getBody().getData();
+            String content = StringUtils.newStringUtf8(Base64.decodeBase64(part.getBody().getData()));
+            if (content == null) content = "";
+            Log.d("ASDF", content);
             for (MessagePartHeader header : part.getHeaders() ) {
                 if (header.getName().equals("From")) {
                     sender = header.getValue();
