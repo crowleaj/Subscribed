@@ -90,7 +90,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
             Date date;
             String subject;
             String sender;
-            String content;
+            String content = part.getBody().getData();
             for (MessagePartHeader header : part.getHeaders() ) {
                 if (header.getName().equals("From")) {
                     sender = header.getValue();
