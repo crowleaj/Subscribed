@@ -1,6 +1,8 @@
 package edu.rose_hulman.crowleaj.subscribed;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,10 +57,10 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         }
     }
 
-    public SubscriptionAdapter(Context context, SubscriptionsFragment.Callback callback) {
-        mContext = context;
+    public SubscriptionAdapter(Fragment activity, SubscriptionsFragment.Callback callback) {
+        mContext = activity.getContext();
         mCallback = callback;
-        populateSubscriptions();
+       // populateSubscriptions(activity);
     }
 
     @Override
@@ -86,18 +88,19 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         return mSubscriptions.size();
     }
 
-    public void populateSubscriptions() {
-        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
-        Type listType = new TypeToken<List<Email>>(){}.getType();
-        InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
-        Reader reader = new BufferedReader(new InputStreamReader(is));
-        List<Email> emails = gson.fromJson(reader, listType);
+    public void populateSubscriptions(Fragment fragment, List<Email> emails) {
+
+//        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
+//        Type listType = new TypeToken<List<Email>>(){}.getType();
+//        InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
+//        Reader reader = new BufferedReader(new InputStreamReader(is));
+//        List<Email> emails = gson.fromJson(reader, listType);
         Collections.sort(emails);
-        try {
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            reader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         //Log.d("TAG", emails.get(0).getDate().toString());
         mSubscriptions.add(new Subscription(emails.get(0).getSender()));
         mSubscriptions.get(0).addEmail(emails.get(0));
@@ -116,5 +119,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 mSubscriptions.get(mSubscriptions.size()-1).addEmail(emails.get(i));
             }
         }
+        notifyDataSetChanged();
     }
 }

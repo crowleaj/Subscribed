@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -42,11 +43,13 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
  * An asynchronous task that handles the Gmail API call.
  * Placing the API calls in their own task ensures the UI stays responsive.
  */
-public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+public class MakeRequestTask extends AsyncTask<Void, Void, List<Email>> {
     private com.google.api.services.gmail.Gmail mService = null;
     private Exception mLastError = null;
-    private Activity mActivity;
-    MakeRequestTask(GoogleAccountCredential credential, Activity activity) {
+    private Fragment mActivity;
+    private OnEmailsReceived mReceiver;
+
+    MakeRequestTask(GoogleAccountCredential credential, Fragment activity,  OnEmailsReceived receiver) {
         mActivity = activity;
         HttpTransport transport = AndroidHttp.newCompatibleTransport();
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -54,6 +57,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
                 transport, jsonFactory, credential)
                 .setApplicationName("Gmail API Android Quickstart")
                 .build();
+        mReceiver = receiver;
     }
 
     /**
@@ -61,7 +65,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
      * @param params no parameters needed for this task.
      */
     @Override
-    protected List<String> doInBackground(Void... params) {
+    protected List<Email> doInBackground(Void... params) {
         try {
             return getDataFromApi();
         } catch (Exception e) {
@@ -76,10 +80,10 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
      * @return List of Strings labels.
      * @throws IOException
      */
-    private List<String> getDataFromApi() throws IOException {
+    private List<Email> getDataFromApi() throws IOException {
         // Get the labels in the user's account.
         String user = "me";
-        List<String> emails = new ArrayList<String>();
+        List<Email> emails = new ArrayList<Email>();
 //        ListLabelsResponse listResponse =
 //                mService.users().labels().list(user).execute();
         //"E, dd MM YYYY HH:mm:ss Z"
@@ -91,42 +95,44 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
             Message m = mService.users().messages().get("me", message.getId()).execute();
             MessagePart part = m.getPayload();
 //            if (part != null)
-            String date = null;
+            Date date = null;
             String subject = null;
             String sender = null;
             String content = StringUtils.newStringUtf8(Base64.decodeBase64(part.getBody().getData()));
             if (content == null) content = "";
-            Log.d("ASDF", content);
+           // Log.d("ASDF", content);
             for (MessagePartHeader header : part.getHeaders() ) {
                 if (header.getName().equals("From")) {
                     sender = header.getValue();
                 } else if (header.getName().equals("Subject")) {
                     subject = header.getValue();
                 } else if (header.getName().equals("Date")) {
-                    date = header.getValue();
+                    //date = header.getValue();
 
-//                    try {
-//                        date = df.parse(header.getValue());
-//                        //Log.d("ASDF",header.getValue());
-//                    } catch (Exception e) {
-//                        try {
-//
-//                            date = df2.parse(header.getValue());
-//                        }
-//                        catch (Exception e1) {
-//                            Log.e("ERR", e1.getMessage());
-//                        }
-//                    }
+                    try {
+                        date = df.parse(header.getValue());
+                        //Log.d("ASDF",header.getValue());
+                    } catch (Exception e) {
+                        try {
+
+                            date = df2.parse(header.getValue());
+                        }
+                        catch (Exception e1) {
+                            Log.e("ERR", e1.getMessage());
+                        }
+                    }
                     //Log.d("ASDF",header.getValue());
                 }
 //                else {
 //                    Log.d("ASDF",header.getName());
 //                }
             }
-            emails.add(date);
-            emails.add(subject);
-            emails.add(sender);
-            emails.add(content);
+            Email email = new Email();
+            email.date = date;
+            email.subject = subject;
+            email.sender = sender;
+            email.content = content;
+            emails.add(email);
         }
 
 //        for (Label label : listResponse.getLabels()) {
@@ -143,15 +149,16 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
     }
 
     @Override
-    protected void onPostExecute(List<String> output) {
+    protected void onPostExecute(List<Email> emails) {
         //mProgress.hide();
-        if (output == null || output.size() == 0) {
-            //mOutputText.setText("No results returned.");
-        } else {
-            Log.d("ASDF", TextUtils.join("\n", output));
-            output.add(0, "Data retrieved using the Gmail API:");
-          //  mOutputText.setText(TextUtils.join("\n", output));
-        }
+//        if (output == null || output.size() == 0) {
+//            //mOutputText.setText("No results returned.");
+//        } else {
+//            Log.d("ASDF", TextUtils.join("\n", output));
+//            output.add(0, "Data retrieved using the Gmail API:");
+//          //  mOutputText.setText(TextUtils.join("\n", output));
+//        }
+        mReceiver.finished(emails);
     }
 
     @Override
@@ -168,7 +175,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
             } else if (mLastError instanceof UserRecoverableAuthIOException) {
                 mActivity.startActivityForResult(
                         ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                        MainActivity.REQUEST_AUTHORIZATION);
+                        SubscriptionsFragment.REQUEST_AUTHORIZATION);
             }
             else {
                 Log.d("ERR", "The following error occurred:\n" + mLastError.getClass().getCanonicalName()
@@ -178,5 +185,9 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
             Log.d("ASDF", "Mission Critical error!");
            // mOutputText.setText("Request cancelled.");
         }
+    }
+
+    interface OnEmailsReceived {
+        public void finished(List<Email> emails);
     }
 }
