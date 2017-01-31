@@ -33,6 +33,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
     private Context mContext;
+    private SubscriptionsFragment.Callback mCallback;
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSubscription;
@@ -54,8 +55,9 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         }
     }
 
-    public SubscriptionAdapter(Context context) {
+    public SubscriptionAdapter(Context context, SubscriptionsFragment.Callback callback) {
         mContext = context;
+        mCallback = callback;
         populateSubscriptions();
     }
 
@@ -71,6 +73,12 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize() + "");
         holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
         holder.mSubscriptionDate.setText(mSubscriptions.get(position).getDate());
+        holder.mSubscription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCallback.Callback();
+            }
+        });
     }
 
     @Override

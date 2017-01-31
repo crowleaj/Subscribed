@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,7 +39,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SubscriptionsFragment.Callback, SpecificFragment.OnSpecificCallback {
 
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -77,11 +80,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new SubscriptionAdapter(this);
-        //mAdapter.populateSubscriptions();
-        recyclerView.setAdapter(mAdapter);
+        Fragment frag = new SubscriptionsFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.drawer_layout, frag, "Fragment");
+        ft.commit();
 
 
         // Initialize credentials and service object.
@@ -294,4 +296,17 @@ public class MainActivity extends AppCompatActivity
         return (networkInfo != null && networkInfo.isConnected());
     }
 
+    @Override
+    public void Callback() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        SpecificFragment fragment = SpecificFragment.newInstance();
+        ft.replace(R.id.drawer_layout, fragment);
+        ft.addToBackStack("detail");
+        ft.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
