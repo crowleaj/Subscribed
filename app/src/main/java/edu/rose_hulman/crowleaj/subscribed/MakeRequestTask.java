@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import edu.rose_hulman.crowleaj.subscribed.models.Email;
+
 /**
  * An asynchronous task that handles the Gmail API call.
  * Placing the API calls in their own task ensures the UI stays responsive.
@@ -77,7 +79,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
     private List<String> getDataFromApi() throws IOException {
         // Get the labels in the user's account.
         String user = "me";
-        List<String> labels = new ArrayList<String>();
+        List<String> emails = new ArrayList<String>();
 //        ListLabelsResponse listResponse =
 //                mService.users().labels().list(user).execute();
         //"E, dd MM YYYY HH:mm:ss Z"
@@ -89,9 +91,9 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
             Message m = mService.users().messages().get("me", message.getId()).execute();
             MessagePart part = m.getPayload();
 //            if (part != null)
-            Date date;
-            String subject;
-            String sender;
+            String date = null;
+            String subject = null;
+            String sender = null;
             String content = StringUtils.newStringUtf8(Base64.decodeBase64(part.getBody().getData()));
             if (content == null) content = "";
             Log.d("ASDF", content);
@@ -101,30 +103,36 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
                 } else if (header.getName().equals("Subject")) {
                     subject = header.getValue();
                 } else if (header.getName().equals("Date")) {
-                    try {
-                        date = df.parse(header.getValue());
-                        //Log.d("ASDF",header.getValue());
-                    } catch (Exception e) {
-                        try {
+                    date = header.getValue();
 
-                        date = df2.parse(header.getValue());
-                        }
-                        catch (Exception e1) {
-                            Log.e("ERR", e1.getMessage());
-                        }
-                    }
-
+//                    try {
+//                        date = df.parse(header.getValue());
+//                        //Log.d("ASDF",header.getValue());
+//                    } catch (Exception e) {
+//                        try {
+//
+//                            date = df2.parse(header.getValue());
+//                        }
+//                        catch (Exception e1) {
+//                            Log.e("ERR", e1.getMessage());
+//                        }
+//                    }
                     //Log.d("ASDF",header.getValue());
                 }
 //                else {
 //                    Log.d("ASDF",header.getName());
 //                }
             }
+            emails.add(date);
+            emails.add(subject);
+            emails.add(sender);
+            emails.add(content);
         }
+
 //        for (Label label : listResponse.getLabels()) {
 //            labels.add(label.getName());
 //        }
-        return labels;
+        return emails;
     }
 
 

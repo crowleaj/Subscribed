@@ -17,6 +17,9 @@ public class Email implements Comparable, Parcelable {
     public String sender;
     public String content;
 
+    public Email() {
+
+    }
     protected Email(Parcel in) {
         subject = in.readString();
         sender = in.readString();
