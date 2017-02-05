@@ -94,7 +94,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 //        Type listType = new TypeToken<List<Email>>(){}.getType();
 //        InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
 //        Reader reader = new BufferedReader(new InputStreamReader(is));
-//        List<Email> emails = gson.fromJson(reader, listType);
+//        List<Email> testEmails = gson.fromJson(reader, listType);
         Collections.sort(emails);
 //        try {
 //            reader.close();

@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 
         Fragment frag = new SubscriptionsFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.drawer_layout, frag, "Fragment");
+        ft.replace(R.id.container, frag, "Fragment");
         ft.commit();
 
 
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
     public void Callback(ArrayList<Email> emails) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         SpecificFragment fragment = SpecificFragment.newInstance(emails);
-        ft.replace(R.id.drawer_layout, fragment);
+        ft.replace(R.id.container, fragment);
         ft.addToBackStack("detail");
         ft.commit();
     }
