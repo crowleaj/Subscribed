@@ -1,6 +1,8 @@
 # Subscribed
 Android organizaition app for email subscriptions
 
+## Useful links for project development
+
 Gmail API Android QuickStart:
 
 https://developers.google.com/gmail/api/quickstart/android
@@ -12,3 +14,7 @@ http://stackoverflow.com/questions/34291902/android-studio-emulator-does-not-com
 Error starting Emulator:
 
 http://stackoverflow.com/questions/36554322/cannot-start-emulator-in-android-studio-2-0
+
+Mock Data Generator:
+
+https://www.mockaroo.com/
