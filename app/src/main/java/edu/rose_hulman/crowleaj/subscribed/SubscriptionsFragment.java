@@ -11,11 +11,15 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
+import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -42,7 +47,7 @@ import static android.app.Activity.RESULT_OK;
  * Activities containing this fragment MUST implement the {@ link OnListFragmentInteractionListener}
  * interface.
  */
-public class SubscriptionsFragment extends Fragment implements MakeRequestTask.OnEmailsReceived {
+public class SubscriptionsFragment extends Fragment implements MakeRequestTask.OnEmailsReceived, SearchView.OnQueryTextListener {
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -62,6 +67,7 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
     private int mColumnCount = 1;
     private Callback mListener;
     public SubscriptionAdapter mAdapter;
+    public RecyclerView list;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -93,6 +99,16 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
                 getContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
         chooseAccount();
+        setHasOptionsMenu(true);
+    }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        final MenuItem searchItem = menu.findItem(R.id.action_lookup);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
+
     }
 
     @Override
@@ -100,12 +116,13 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_main, container, false);
         //Recycler View
-        RecyclerView list = (RecyclerView) view.findViewById(R.id.recycler_view);
+        list = (RecyclerView) view.findViewById(R.id.recycler_view);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         list.setLayoutManager(manager);
         mAdapter = new SubscriptionAdapter(this, mListener);
         list.setAdapter(mAdapter);
+        Log.d("TAGG", "onCreateView: I am making the subscriptions");
         return view;
     }
 
@@ -280,6 +297,17 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
         mAdapter.populateSubscriptions(this, emails);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mAdapter.filter(newText);
+        return true;
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -293,6 +321,7 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
      */
     public interface Callback {
         void Callback(ArrayList<Email> emails);
+
     }
 
 }

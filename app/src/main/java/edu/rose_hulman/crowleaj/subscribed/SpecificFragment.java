@@ -5,9 +5,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Parcelable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,7 +27,7 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
  * Use the {@link SpecificFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SpecificFragment extends android.support.v4.app.Fragment {
+public class SpecificFragment extends android.support.v4.app.Fragment  {
 
     private OnSpecificCallback mListener;
     public SpecificAdapter mAdapter;
@@ -61,8 +66,10 @@ public class SpecificFragment extends android.support.v4.app.Fragment {
         list.setLayoutManager(manager);
         mAdapter = new SpecificAdapter(getArguments().<Email>getParcelableArrayList("key"));
         list.setAdapter(mAdapter);
+        setHasOptionsMenu(true);
         return view;
     }
+
 
 
     public void onButtonPressed(Uri uri) {
@@ -87,6 +94,7 @@ public class SpecificFragment extends android.support.v4.app.Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

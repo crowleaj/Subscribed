@@ -1,5 +1,7 @@
 package edu.rose_hulman.crowleaj.subscribed.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.Date;
  * Created by alex on 1/23/17.
  */
 
-public class Subscription {
+public class Subscription implements Parcelable {
 
     ArrayList<Email> mEmails = new ArrayList<>();
     String title;
@@ -21,6 +23,25 @@ public class Subscription {
     public Subscription(String subTitle) {
         title = subTitle;
     }
+
+    protected Subscription(Parcel in) {
+        mEmails = in.createTypedArrayList(Email.CREATOR);
+        title = in.readString();
+        clicks = in.readInt();
+        favorited = in.readByte() != 0;
+    }
+
+    public static final Creator<Subscription> CREATOR = new Creator<Subscription>() {
+        @Override
+        public Subscription createFromParcel(Parcel in) {
+            return new Subscription(in);
+        }
+
+        @Override
+        public Subscription[] newArray(int size) {
+            return new Subscription[size];
+        }
+    };
 
     public String getNewestSubject() {
         if (mEmails.size() > 0) {
@@ -61,5 +82,18 @@ public class Subscription {
 
     public boolean isFavorited() {
         return favorited;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeTypedList(mEmails);
+        parcel.writeString(title);
+        parcel.writeInt(clicks);
+        parcel.writeByte((byte) (favorited ? 1 : 0));
     }
 }
