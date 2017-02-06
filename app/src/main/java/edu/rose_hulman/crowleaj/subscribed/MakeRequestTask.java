@@ -87,8 +87,10 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<Email>> {
 //        ListLabelsResponse listResponse =
 //                mService.users().labels().list(user).execute();
         //"E, dd MM YYYY HH:mm:ss Z"
-        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
-        DateFormat df2 = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+        DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+        DateFormat df2 = new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+        DateFormat df3 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+
 
         ListMessagesResponse listResponse = mService.users().messages().list(user).setQ("unsubscribe").execute();
         for (Message message : listResponse.getMessages()) {
@@ -118,7 +120,13 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<Email>> {
                             date = df2.parse(header.getValue());
                         }
                         catch (Exception e1) {
-                            Log.e("ERR", e1.getMessage());
+                            try {
+
+                                date = df3.parse(header.getValue());
+                            }
+                            catch (Exception e2) {
+                                Log.e("ERR", e2.getMessage());
+                            }
                         }
                     }
                     //Log.d("ASDF",header.getValue());
