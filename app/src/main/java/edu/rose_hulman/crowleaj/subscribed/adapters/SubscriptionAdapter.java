@@ -1,4 +1,4 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,20 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.rose_hulman.crowleaj.subscribed.R;
+import edu.rose_hulman.crowleaj.subscribed.SubscriptionsFragment;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 

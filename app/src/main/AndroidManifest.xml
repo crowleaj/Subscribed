@@ -22,9 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SplashActivity" />
+        <activity android:name=".deprecated.SplashActivity" />
         <activity
-            android:name=".SubscriptionsActivity"
+            android:name=".deprecated.SubscriptionsActivity"
             android:label="@string/title_activity_subscriptions"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

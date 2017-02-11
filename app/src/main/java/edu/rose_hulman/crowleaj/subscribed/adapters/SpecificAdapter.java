@@ -1,7 +1,5 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.adapters;
 
-import android.content.Context;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +8,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 
 /**

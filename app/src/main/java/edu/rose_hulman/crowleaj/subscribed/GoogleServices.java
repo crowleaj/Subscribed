@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -16,6 +15,7 @@ import com.google.api.services.gmail.GmailScopes;
 
 import java.util.Arrays;
 
+import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -64,7 +64,7 @@ public class GoogleServices {
         } else if (! isDeviceOnline()) {
             // mOutputText.setText("No network connection available.");
         } else {
-            Log.d("ASDF", mCredential.getSelectedAccountName());
+            Log.d(Util.TAG_GOOGLE, mCredential.getSelectedAccountName());
 
             new MakeRequestTask(mCredential, mFragment, mFragment).execute();
         }
@@ -80,7 +80,7 @@ public class GoogleServices {
         final int connectionStatusCode =
                 apiAvailability.isGooglePlayServicesAvailable(mActivity);
         if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
-            Log.d("TAG", "" + connectionStatusCode);
+            Log.d(Util.TAG_GOOGLE, "" + connectionStatusCode);
             // showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
         }
     }

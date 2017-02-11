@@ -1,10 +1,12 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.deprecated;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.services.gmail.GmailScopes;
+
+import edu.rose_hulman.crowleaj.subscribed.R;
 
 public class SplashActivity extends AppCompatActivity {
 

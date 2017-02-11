@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="edu.rose_hulman.crowleaj.subscribed.SubscriptionsActivity">
+    tools:context="edu.rose_hulman.crowleaj.subscribed.deprecated.SubscriptionsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

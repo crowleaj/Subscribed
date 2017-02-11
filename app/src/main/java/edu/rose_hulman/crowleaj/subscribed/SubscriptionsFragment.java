@@ -1,21 +1,15 @@
 package edu.rose_hulman.crowleaj.subscribed;
 
-import android.Manifest;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,20 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.gmail.GmailScopes;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
-import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
+import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -50,11 +36,9 @@ import static android.app.Activity.RESULT_OK;
 public class SubscriptionsFragment extends Fragment implements MakeRequestTask.OnEmailsReceived, SearchView.OnQueryTextListener {
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
+    public static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     private static final String PREF_ACCOUNT_NAME = "accountName";
-
-
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -115,7 +99,7 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
         list.setLayoutManager(manager);
         mAdapter = new SubscriptionAdapter(this, mListener);
         list.setAdapter(mAdapter);
-        Log.d("TAGG", "onCreateView: I am making the subscriptions");
+        Log.d(Util.TAG_DEBUG, "onCreateView: I am making the subscriptions");
         return view;
     }
 

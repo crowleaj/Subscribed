@@ -1,4 +1,4 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.tasks;
 
 /**
  * Created by alex on 1/30/17.
@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import edu.rose_hulman.crowleaj.subscribed.SubscriptionsFragment;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 
 /**
@@ -195,7 +196,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<Email>> {
         }
     }
 
-    interface OnEmailsReceived {
+    public interface OnEmailsReceived {
         public void finished(List<Email> emails);
     }
 }
