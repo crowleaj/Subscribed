@@ -50,7 +50,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<Email>> {
     private Fragment mActivity;
     private OnEmailsReceived mReceiver;
 
-    MakeRequestTask(GoogleAccountCredential credential, Fragment activity,  OnEmailsReceived receiver) {
+    public MakeRequestTask(GoogleAccountCredential credential, Fragment activity,  OnEmailsReceived receiver) {
         mActivity = activity;
         HttpTransport transport = AndroidHttp.newCompatibleTransport();
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();

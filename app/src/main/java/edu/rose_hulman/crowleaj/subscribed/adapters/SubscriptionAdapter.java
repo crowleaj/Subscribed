@@ -161,6 +161,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 mSubscriptions.get(mSubscriptions.size()-1).addEmail(emails.get(i));
             }
         }
+        filterSubs.addAll(mSubscriptions);
         notifyDataSetChanged();
     }
 
