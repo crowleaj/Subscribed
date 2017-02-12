@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.api.services.gmail.model.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,8 +173,8 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
     }
 
     @Override
-    public void finished(List<Email> emails) {
-        mAdapter.populateSubscriptions(this, emails);
+    public void emailsReceived(List<Message> emails) {
+        mAdapter.populateSubscriptions(mServices.getService(), emails);
     }
 
     @Override

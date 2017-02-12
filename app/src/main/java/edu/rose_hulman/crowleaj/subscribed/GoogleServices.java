@@ -9,7 +9,11 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.gmail.GmailScopes;
 
@@ -36,6 +40,8 @@ public class GoogleServices {
 
     GoogleAccountCredential mCredential;
 
+    private com.google.api.services.gmail.Gmail mService = null;
+
     public GoogleServices(SubscriptionsFragment fragment) {
         mFragment = fragment;
         mActivity = fragment.getActivity();
@@ -49,6 +55,13 @@ public class GoogleServices {
         mCredential.setSelectedAccountName(name);
     }
 
+    public GoogleAccountCredential getCredential() {
+        return mCredential;
+    }
+
+    public com.google.api.services.gmail.Gmail getService() {
+        return mService;
+    }
     /**
      * Attempt to call the API, after verifying that all the preconditions are
      * satisfied. The preconditions are: Google Play Services installed, an
@@ -65,8 +78,13 @@ public class GoogleServices {
             // mOutputText.setText("No network connection available.");
         } else {
             Log.d(Util.TAG_GOOGLE, mCredential.getSelectedAccountName());
-
-            new MakeRequestTask(mCredential, mFragment, mFragment).execute();
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            mService = new com.google.api.services.gmail.Gmail.Builder(
+                    transport, jsonFactory, mCredential)
+                    .setApplicationName("Gmail API Android Quickstart")
+                    .build();
+            new MakeRequestTask(mService, mFragment, mFragment).execute();
         }
     }
 

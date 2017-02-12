@@ -12,15 +12,17 @@ import java.util.Date;
 
 public class Email implements Comparable, Parcelable {
 
+    public String id;
     public Date date;
     public String subject;
     public String sender;
     public String content;
 
-    public Email() {
-
+    public Email(String id) {
+        this.id = id;
     }
     protected Email(Parcel in) {
+        id = in.readString();
         subject = in.readString();
         sender = in.readString();
         content = in.readString();
@@ -49,7 +51,7 @@ public class Email implements Comparable, Parcelable {
 
     @Override
     public int compareTo(Object o) {
-        return ((Email)o).getDate().compareTo(date);// date.compareTo(((Email)o).getDate());
+        return ((Email)o).getDate().compareTo(date);// date.compareTo(((Email)o).getDateString());
     }
 
     public String getSender() {

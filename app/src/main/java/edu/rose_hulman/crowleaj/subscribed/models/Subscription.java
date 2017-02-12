@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by alex on 1/23/17.
  */
 
-public class Subscription implements Parcelable {
+public class Subscription implements Comparable, Parcelable {
 
     ArrayList<Email> mEmails = new ArrayList<>();
     String title;
@@ -63,8 +63,12 @@ public class Subscription implements Parcelable {
         return mEmails.size();
     }
 
-    public String getDate() {
+    public String getDateString() {
         return mEmails.get(0).getFormattedDate();
+    }
+
+    public Date getDate() {
+        return mEmails.get(0).getDate();
     }
 
     public ArrayList<Email> getMatchingEmails(String query) {
@@ -95,5 +99,10 @@ public class Subscription implements Parcelable {
         parcel.writeString(title);
         parcel.writeInt(clicks);
         parcel.writeByte((byte) (favorited ? 1 : 0));
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return ((Subscription)o).getDate().compareTo(getDate());// date.compareTo(((Email)o).getDateString());
     }
 }
