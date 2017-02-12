@@ -206,11 +206,11 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         } else {
             toLoad = emails.size();
             synchronized (mEmails) {
-                for (Message message : emails) {
+                outer : for (Message message : emails) {
                     for (Email email : mEmails) {
                         if (email.id.equals(message.getId())) {
                             // Log.d(Util.TAG_DEBUG, message.getId());
-                            continue;
+                            continue outer;
                         }
                     }
                     new EmailDataTask(message, this, service).execute();

@@ -1,5 +1,6 @@
 package edu.rose_hulman.crowleaj.subscribed;
 
+import android.Manifest;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,8 @@ import java.util.List;
 import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -36,7 +39,7 @@ import static android.app.Activity.RESULT_OK;
  * interface.
  */
 public class SubscriptionsFragment extends Fragment implements MakeRequestTask.OnEmailsReceived, SearchView.OnQueryTextListener {
-
+    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     public static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -101,7 +104,7 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
         mAdapter = new SubscriptionAdapter(this, mListener);
         list.setAdapter(mAdapter);
         Log.d(Util.TAG_DEBUG, "onCreateView: I am making the subscriptions");
-        mServices.chooseAccount();
+        chooseAccount();
         return view;
     }
 
@@ -202,6 +205,41 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
     public interface Callback {
         void Callback(ArrayList<Email> emails);
 
+    }
+
+    /**
+     * Attempts to set the account used with the API credentials. If an account
+     * name was previously saved it will use that one; otherwise an account
+     * picker dialog will be shown to the user. Note that the setting the
+     * account to use with the credentials object requires the app to have the
+     * GET_ACCOUNTS permission, which is requested here if it is not already
+     * present. The AfterPermissionGranted annotation indicates that this
+     * function will be rerun automatically whenever the GET_ACCOUNTS permission
+     * is granted.
+     */
+    @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
+    public void chooseAccount() {
+        if (EasyPermissions.hasPermissions(
+                getActivity(), Manifest.permission.GET_ACCOUNTS)) {
+            String accountName = getActivity().getPreferences(Context.MODE_PRIVATE)
+                    .getString(PREF_ACCOUNT_NAME, null);
+            if (accountName != null) {
+                mServices.getCredential().setSelectedAccountName(accountName);
+                mServices.getResultsFromApi();
+            } else {
+                // Start a dialog from which the user can choose an account
+                startActivityForResult(
+                        mServices.getCredential().newChooseAccountIntent(),
+                        REQUEST_ACCOUNT_PICKER);
+            }
+        } else {
+            // Request the GET_ACCOUNTS permission via a user dialog
+            EasyPermissions.requestPermissions(
+                    this,
+                    "This app needs to access your Google account (via Contacts).",
+                    REQUEST_PERMISSION_GET_ACCOUNTS,
+                    Manifest.permission.GET_ACCOUNTS);
+        }
     }
 
 }

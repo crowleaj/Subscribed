@@ -32,9 +32,9 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Log.d(Util.TAG_DEBUG,"Content: " + emails.get(position).getContent());
         holder.mSubject.setText(emails.get(position).getSubject());
-        holder.mBody.setText(emails.get(position).getContent());
-        Log.d(Util.TAG_DEBUG, emails.get(position).getContent());
+        holder.mBody.setText(Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT));
         //Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT)
         holder.mDate.setText(emails.get(position).getFormattedDate());
     }

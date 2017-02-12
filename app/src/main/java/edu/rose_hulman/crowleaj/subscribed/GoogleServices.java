@@ -31,9 +31,6 @@ public class GoogleServices {
     private final SubscriptionsFragment mFragment;
     private final Activity mActivity;
 
-    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-
     private static final String[] SCOPES = { GmailScopes.GMAIL_LABELS, GmailScopes.GMAIL_READONLY };
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
@@ -73,7 +70,7 @@ public class GoogleServices {
         if (! isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
-            chooseAccount();
+            mFragment.chooseAccount();
         } else if (! isDeviceOnline()) {
             // mOutputText.setText("No network connection available.");
         } else {
@@ -104,41 +101,6 @@ public class GoogleServices {
         if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
             Log.d(Util.TAG_GOOGLE, "" + connectionStatusCode);
             // showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-        }
-    }
-
-    /**
-     * Attempts to set the account used with the API credentials. If an account
-     * name was previously saved it will use that one; otherwise an account
-     * picker dialog will be shown to the user. Note that the setting the
-     * account to use with the credentials object requires the app to have the
-     * GET_ACCOUNTS permission, which is requested here if it is not already
-     * present. The AfterPermissionGranted annotation indicates that this
-     * function will be rerun automatically whenever the GET_ACCOUNTS permission
-     * is granted.
-     */
-    @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    public void chooseAccount() {
-        if (EasyPermissions.hasPermissions(
-                mActivity, Manifest.permission.GET_ACCOUNTS)) {
-            String accountName = mActivity.getPreferences(Context.MODE_PRIVATE)
-                    .getString(PREF_ACCOUNT_NAME, null);
-            if (accountName != null) {
-                mCredential.setSelectedAccountName(accountName);
-                getResultsFromApi();
-            } else {
-                // Start a dialog from which the user can choose an account
-                mFragment.startActivityForResult(
-                        mCredential.newChooseAccountIntent(),
-                        REQUEST_ACCOUNT_PICKER);
-            }
-        } else {
-            // Request the GET_ACCOUNTS permission via a user dialog
-            EasyPermissions.requestPermissions(
-                    this,
-                    "This app needs to access your Google account (via Contacts).",
-                    REQUEST_PERMISSION_GET_ACCOUNTS,
-                    Manifest.permission.GET_ACCOUNTS);
         }
     }
 
