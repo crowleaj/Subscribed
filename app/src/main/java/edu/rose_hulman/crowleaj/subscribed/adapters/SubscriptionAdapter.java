@@ -205,8 +205,17 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             new MakeRequestTask(service, mFragment, mFragment, date).execute();
         } else {
             toLoad = emails.size();
-            for (Message message : emails)
-                new EmailDataTask(message, this, service).execute();
+            synchronized (mEmails) {
+                for (Message message : emails) {
+                    for (Email email : mEmails) {
+                        if (email.id.equals(message.getId())) {
+                            // Log.d(Util.TAG_DEBUG, message.getId());
+                            continue;
+                        }
+                    }
+                    new EmailDataTask(message, this, service).execute();
+                }
+            }
         }
     }
 
@@ -215,12 +224,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         ++loaded;
         if (toLoad > 0) {
             synchronized (mEmails) {
-                for (Email email1 : mEmails) {
-                    if (email.id.equals(email1.id)) {
-                        // Log.d(Util.TAG_DEBUG, email1.id);
-                        return;
-                    }
-                }
                 mEmails.add(email);
             }
         }
