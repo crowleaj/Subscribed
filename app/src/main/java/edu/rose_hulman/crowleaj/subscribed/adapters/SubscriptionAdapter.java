@@ -5,23 +5,44 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.DateTime;
 import com.google.api.services.gmail.model.Message;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.SubscriptionsFragment;
+import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
+import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
 
 /**
  * Created by alex on 1/23/17.
@@ -29,12 +50,15 @@ import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
 
 public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapter.ViewHolder> implements EmailDataTask.OnEmailLoaded{
 
+    private final SubscriptionsFragment mFragment;
     private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
     private ArrayList<Subscription> filterSubs = new ArrayList<>();
     private Context mContext;
     private SubscriptionsFragment.Callback mCallback;
+    public List<Email> mEmails = Collections.synchronizedList(new ArrayList<Email>());
 
-
+    private int loaded = 0;
+    private int toLoad;
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSubscription;
@@ -56,10 +80,11 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         }
     }
 
-    public SubscriptionAdapter(Fragment activity, SubscriptionsFragment.Callback callback) {
-        mContext = activity.getContext();
+    public SubscriptionAdapter(SubscriptionsFragment fragment, SubscriptionsFragment.Callback callback) {
+        mContext = fragment.getContext();
         mCallback = callback;
         filterSubs.addAll(mSubscriptions);
+        mFragment = fragment;
        // populateSubscriptions(activity);
     }
 
@@ -166,13 +191,39 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 //        }
 //        filterSubs.addAll(mSubscriptions);
 //        notifyDataSetChanged();
-        com.google.api.services.gmail.Gmail mService;
-        for (Message message : emails)
-            new EmailDataTask(message, this, service).execute();
+        if (emails == null) {
+            Log.d(Util.TAG_DEBUG, "NULLLL");
+            synchronized (mEmails) {
+                for (Email email : mEmails)
+                    emailLoaded(email);
+            }
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(mSubscriptions.get(0).getDate());
+            cal.add(Calendar.DATE, -1);
+            SimpleDateFormat formatter = new SimpleDateFormat("YYYY/MM/dd");
+            String date = formatter.format(cal.getTime());
+            new MakeRequestTask(service, mFragment, mFragment, date).execute();
+        } else {
+            toLoad = emails.size();
+            for (Message message : emails)
+                new EmailDataTask(message, this, service).execute();
+        }
     }
 
     @Override
     public void emailLoaded(Email email) {
+        ++loaded;
+        if (toLoad > 0) {
+            synchronized (mEmails) {
+                for (Email email1 : mEmails) {
+                    if (email.id.equals(email1.id)) {
+                        // Log.d(Util.TAG_DEBUG, email1.id);
+                        return;
+                    }
+                }
+                mEmails.add(email);
+            }
+        }
         boolean foundSubscription = false;
         for (Subscription subscription : mSubscriptions) {
            if(subscription.getTitle().equals(email.getSender())) {
@@ -189,5 +240,41 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         Collections.sort(mSubscriptions);
         Collections.sort(filterSubs);
         notifyDataSetChanged();
+        if (loaded == toLoad)
+            writeEmails();
+
    }
+
+    @Override
+    public void emailCanceled() {
+        ++loaded;
+        if (loaded == toLoad)
+            writeEmails();
+    }
+
+    public void readEmails() {
+        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
+        Type listType = new TypeToken<List<Email>>(){}.getType();
+        try {
+            InputStream is = mContext.openFileInput("EMAILS");
+            Reader reader = new BufferedReader(new InputStreamReader(is));
+            mEmails = gson.fromJson(reader, listType);
+            reader.close();
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+    }
+
+    public void writeEmails() {
+        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
+        Type listType = new TypeToken<List<Email>>(){}.getType();
+        try {
+            FileOutputStream fos = mContext.openFileOutput("EMAILS", Context.MODE_PRIVATE);
+            fos.write(gson.toJson(mEmails, listType).getBytes());
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mEmails.clear();
+    }
 }

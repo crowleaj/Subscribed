@@ -1,6 +1,8 @@
 package edu.rose_hulman.crowleaj.subscribed.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import edu.rose_hulman.crowleaj.subscribed.R;
+import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 
 /**
@@ -31,6 +34,8 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mSubject.setText(emails.get(position).getSubject());
         holder.mBody.setText(emails.get(position).getContent());
+        Log.d(Util.TAG_DEBUG, emails.get(position).getContent());
+        //Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT)
         holder.mDate.setText(emails.get(position).getFormattedDate());
     }
 

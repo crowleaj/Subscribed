@@ -77,7 +77,6 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        mServices.chooseAccount();
         setHasOptionsMenu(true);
     }
     @Override
@@ -102,6 +101,7 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
         mAdapter = new SubscriptionAdapter(this, mListener);
         list.setAdapter(mAdapter);
         Log.d(Util.TAG_DEBUG, "onCreateView: I am making the subscriptions");
+        mServices.chooseAccount();
         return view;
     }
 

@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container, frag, "Fragment");
         ft.commit();
-
-
 //        getResultsFromApi();
 
     }

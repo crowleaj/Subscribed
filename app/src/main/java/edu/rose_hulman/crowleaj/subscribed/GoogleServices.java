@@ -84,7 +84,11 @@ public class GoogleServices {
                     transport, jsonFactory, mCredential)
                     .setApplicationName("Gmail API Android Quickstart")
                     .build();
-            new MakeRequestTask(mService, mFragment, mFragment).execute();
+            mFragment.mAdapter.readEmails();
+            if (mFragment.mAdapter.mEmails.size() > 0)
+                mFragment.mAdapter.populateSubscriptions(mService, null);
+            else
+                new MakeRequestTask(mService, mFragment, mFragment).execute();
         }
     }
 

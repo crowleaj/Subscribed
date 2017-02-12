@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 
 /**
@@ -50,7 +51,6 @@ public class EmailDataTask extends AsyncTask<Void, Void, Email> {
         String sender = null;
         String content = StringUtils.newStringUtf8(Base64.decodeBase64(part.getBody().getData()));
         if (content == null) content = "";
-        // Log.d("ASDF", content);
         for (MessagePartHeader header : part.getHeaders() ) {
             if (header.getName().equals("From")) {
                 sender = header.getValue();
@@ -61,7 +61,6 @@ public class EmailDataTask extends AsyncTask<Void, Void, Email> {
 
                 try {
                     date = df.parse(header.getValue());
-                    //Log.d("ASDF",header.getValue());
                 } catch (Exception e) {
                     try {
 
@@ -73,11 +72,10 @@ public class EmailDataTask extends AsyncTask<Void, Void, Email> {
                             date = df3.parse(header.getValue());
                         }
                         catch (Exception e2) {
-                            Log.e("ERR", e2.getMessage());
+                            Log.e(Util.TAG_DEBUG, e2.getMessage());
                         }
                     }
                 }
-                //Log.d("ASDF",header.getValue());
             }
 //                else {
 //                    Log.d("ASDF",header.getName());
@@ -104,6 +102,7 @@ public class EmailDataTask extends AsyncTask<Void, Void, Email> {
 
     public interface OnEmailLoaded {
         void emailLoaded(Email email);
+        void emailCanceled();
     }
 }
 
