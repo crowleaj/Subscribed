@@ -54,6 +54,9 @@ public class EmailDataTask extends AsyncTask<Void, Void, Email> {
         for (MessagePartHeader header : part.getHeaders() ) {
             if (header.getName().equals("From")) {
                 sender = header.getValue();
+                int index = sender.indexOf('<');
+                if (index != 0)
+                    sender = sender.substring(0, index-1);
             } else if (header.getName().equals("Subject")) {
                 subject = header.getValue();
             } else if (header.getName().equals("Date")) {
