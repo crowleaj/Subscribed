@@ -186,14 +186,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Email email) {
-        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-        intent.putExtra(SearchManager.QUERY, email.getSubject());
-        startActivity(intent);
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        EmailFragment fragment = EmailFragment.newInstance(email);
-//        ft.replace(R.id.container, fragment);
-//        ft.addToBackStack("email");
-//        ft.commit();
+//        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+//        intent.putExtra(SearchManager.QUERY, email.getSubject());
+//        startActivity(intent);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        EmailFragment fragment = EmailFragment.newInstance(email);
+        ft.replace(R.id.container, fragment);
+        ft.addToBackStack("email");
+        ft.commit();
     }
 
     @Override

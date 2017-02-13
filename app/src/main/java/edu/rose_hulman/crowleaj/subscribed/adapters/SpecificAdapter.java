@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,7 +39,15 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Log.d(Util.TAG_DEBUG,"Content: " + emails.get(position).getContent());
         holder.mSubject.setText(emails.get(position).getSubject());
-        holder.mBody.setText(Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT));
+       // holder.mBody.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        //holder.mBody.setScrollbarFadingEnabled(true);
+//        holder.mBody.setPadding(0,0,0,0);
+//        holder.mBody.getSettings().setBuiltInZoomControls(true);
+//        holder.mBody.getSettings().setUseWideViewPort(true);
+//        holder.mBody.getSettings().setLoadWithOverviewMode(true);
+//        holder.mBody.loadUrl("file:///android_asset/empty.html");
+//        holder.mBody.loadData(emails.get(position).getContent(), "text/html", "UTF-8");
+       // holder.mBody.setText(Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT));
         //Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT)
         holder.mDate.setText(emails.get(position).getFormattedDate());
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +69,7 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mSubject;
-        private TextView mBody;
+        private WebView mBody;
         private TextView mDate;
         private View mView;
 
@@ -67,7 +77,7 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
             super(itemView);
             mView = itemView;
             mSubject = (TextView) itemView.findViewById(R.id.subject_specific);
-            mBody = (TextView) itemView.findViewById(R.id.body_specific);
+            mBody = (WebView) itemView.findViewById(R.id.body_specific);
             mDate = (TextView) itemView.findViewById(R.id.date_specific);
         }
     }

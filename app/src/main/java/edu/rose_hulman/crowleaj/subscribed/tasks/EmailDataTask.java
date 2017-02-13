@@ -43,14 +43,26 @@ public class EmailDataTask extends AsyncTask<Void, Void, Email> {
     protected Email doInBackground(Void... params) {
         try {
 
-        Message m = mService.users().messages().get("me", message.getId()).execute();
+        Message m = mService.users().messages().get("me", message.getId()).setFormat("FULL").execute();
         MessagePart part = m.getPayload();
 //            if (part != null)
         Date date = null;
         String subject = null;
         String sender = null;
         String content = StringUtils.newStringUtf8(Base64.decodeBase64(part.getBody().getData()));
-        if (content == null) content = "";
+
+            if (content == null){
+                content = "";
+                int i = 0;
+                for(MessagePart mPart : part.getParts()){
+                    if(i == 0)
+                        content = StringUtils.newStringUtf8(Base64.decodeBase64(mPart.getBody().getData()));
+                    else
+                        content += StringUtils.newStringUtf8(Base64.decodeBase64(mPart.getBody().getData()));
+                   // Log.d(Util.TAG_DEBUG, mPart.getMimeType() + " " + i++);
+                   // Log.d(Util.TAG_DEBUG, StringUtils.newStringUtf8(Base64.decodeBase64(mPart.getBody().getData())));
+                }
+            }
         for (MessagePartHeader header : part.getHeaders() ) {
             if (header.getName().equals("From")) {
                 sender = header.getValue();

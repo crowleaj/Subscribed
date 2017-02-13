@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
@@ -58,17 +59,26 @@ public class EmailFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_email, container, false);
+        TextView textView = (TextView) view.findViewById(R.id.email_title);
+        textView.setText(mEmail.getSubject());
         WebView webview = (WebView) view.findViewById(R.id.webview);
-        String url = "";
-        String current = mEmail.getSubject();
-        for (int i = 0; i < current.length(); i++) {
-            if (current.substring(i, i + 1).equals(" ")) {
-                url += "+";
-            } else {
-                url += current.substring(i, i + 1);
-            }
-        }
-        Log.d("URL", url);
+       webview.getSettings().setUseWideViewPort(true);
+        webview.getSettings().setLoadWithOverviewMode(true);
+//        webview.getSettings().setJavaScriptEnabled(true);
+        String head = "<head><meta name=\"viewport\" content=\"width=device-width, user-scalable=yes\" /></head>";
+
+        webview.loadData(head+mEmail.getContent(), "text/html", "UTF-8");
+
+//        String url = "";
+//        String current = mEmail.getSubject();
+//        for (int i = 0; i < current.length(); i++) {
+//            if (current.substring(i, i + 1).equals(" ")) {
+//                url += "+";
+//            } else {
+//                url += current.substring(i, i + 1);
+//            }
+//        }
+        //Log.d("URL", url);
 //        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
 //        intent.putExtra(SearchManager.QUERY, mEmail.getSubject());
 //        startActivity(intent);
