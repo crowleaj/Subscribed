@@ -69,7 +69,7 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         list.setLayoutManager(manager);
-        mAdapter = new SpecificAdapter(getArguments().<Email>getParcelableArrayList("key"));
+        mAdapter = new SpecificAdapter(getArguments().<Email>getParcelableArrayList("key"), mListener);
         list.setAdapter(mAdapter);
         setHasOptionsMenu(true);
         return view;
@@ -117,6 +117,6 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnSpecificCallback {
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Email email);
     }
 }
