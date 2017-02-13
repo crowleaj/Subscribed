@@ -17,6 +17,7 @@ public class Email implements Comparable, Parcelable {
     public String subject;
     public String sender;
     public String content;
+    public boolean matchesQuery;
 
     public Email(String id) {
         this.id = id;
@@ -26,6 +27,7 @@ public class Email implements Comparable, Parcelable {
         subject = in.readString();
         sender = in.readString();
         content = in.readString();
+        matchesQuery = false;
     }
 
     public static final Creator<Email> CREATOR = new Creator<Email>() {

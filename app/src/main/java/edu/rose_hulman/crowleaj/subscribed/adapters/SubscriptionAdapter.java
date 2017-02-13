@@ -56,6 +56,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private Context mContext;
     private SubscriptionsFragment.Callback mCallback;
     public List<Email> mEmails = Collections.synchronizedList(new ArrayList<Email>());
+    public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
 
     private int loaded = 0;
     private int toLoad;
@@ -139,13 +140,10 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 } else {
                     // Iterate in the original List and add it to filter list...
                     for (Subscription item : mSubscriptions) {
-                        if (item.getTitle().toLowerCase().contains(newText.toLowerCase())) {
-                            // Adding Matched items
-                            filterSubs.add(item);
+                        //should find all emails that match the query
+                        matchingEmails = item.getMatchingEmails(newText.toLowerCase());
                         }
                     }
-                }
-
                 // Set on UI Thread
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override

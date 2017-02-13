@@ -74,8 +74,17 @@ public class Subscription implements Comparable, Parcelable {
     public ArrayList<Email> getMatchingEmails(String query) {
         ArrayList<Email> emails = new ArrayList<>();
         for (Email email : mEmails) {
-            if (email.content.contains(query))
+            if (email.content.contains(query)){
+                email.matchesQuery = true;
+                emails.add(email);}
+            else if(email.sender.toLowerCase().contains(query)){
+                email.matchesQuery = true;
                 emails.add(email);
+            }
+            else if(email.subject.toLowerCase().contains(query)){
+                email.matchesQuery = true;
+                emails.add(email);
+            }
         }
         return emails;
     }
