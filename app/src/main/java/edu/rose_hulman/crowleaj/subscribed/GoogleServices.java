@@ -73,7 +73,7 @@ public class GoogleServices {
             mFragment.chooseAccount();
         } else if (! isDeviceOnline()) {
             // mOutputText.setText("No network connection available.");
-        } else {
+        } else if (mService == null){
             Log.d(Util.TAG_GOOGLE, mCredential.getSelectedAccountName());
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();

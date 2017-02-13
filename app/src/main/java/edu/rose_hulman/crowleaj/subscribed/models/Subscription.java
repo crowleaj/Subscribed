@@ -114,4 +114,12 @@ public class Subscription implements Comparable, Parcelable {
     public int compareTo(Object o) {
         return ((Subscription)o).getDate().compareTo(getDate());// date.compareTo(((Email)o).getDateString());
     }
+
+    public boolean containsId(String id) {
+        for (Email email : mEmails) {
+            if (email.id.equals(id))
+                return true;
+        }
+        return false;
+    }
 }

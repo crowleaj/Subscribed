@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,18 +49,15 @@ import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
  * Created by alex on 1/23/17.
  */
 
-public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapter.ViewHolder> implements EmailDataTask.OnEmailLoaded{
+public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapter.ViewHolder> {
 
     private final SubscriptionsFragment mFragment;
-    private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
+    private ArrayList<Subscription> mSubscriptions;
     private ArrayList<Subscription> filterSubs = new ArrayList<>();
     private Context mContext;
     private SubscriptionsFragment.Callback mCallback;
     public List<Email> mEmails = Collections.synchronizedList(new ArrayList<Email>());
     public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
-
-    private int loaded = 0;
-    private int toLoad;
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSubscription;
@@ -83,8 +81,9 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         }
     }
 
-    public SubscriptionAdapter(SubscriptionsFragment fragment, SubscriptionsFragment.Callback callback) {
+    public SubscriptionAdapter(SubscriptionsFragment fragment, SubscriptionsFragment.Callback callback, ArrayList<Subscription> subscriptions) {
         mContext = fragment.getContext();
+        mSubscriptions = subscriptions;
         mCallback = callback;
         filterSubs.addAll(mSubscriptions);
         mFragment = fragment;
@@ -157,9 +156,15 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         }).start();
     }
 
-
+    public void updateFilter(Subscription subscription) {
+        if (subscription != null) {
+            filterSubs.add(subscription);
+            Collections.sort(filterSubs);
+        }
+        notifyDataSetChanged();
+    }
     public void populateSubscriptions(com.google.api.services.gmail.Gmail service, List<Message> emails) {
-
+        notifyDataSetChanged();
 //        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
 //        Type listType = new TypeToken<List<Email>>(){}.getType();
 //        InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
@@ -191,68 +196,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 //        }
 //        filterSubs.addAll(mSubscriptions);
 //        notifyDataSetChanged();
-        if (emails == null) {
-            Log.d(Util.TAG_DEBUG, "NULLLL");
-            synchronized (mEmails) {
-                for (Email email : mEmails)
-                    emailLoaded(email);
-            }
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(mSubscriptions.get(0).getDate());
-            cal.add(Calendar.DATE, -1);
-            SimpleDateFormat formatter = new SimpleDateFormat("YYYY/MM/dd");
-            String date = formatter.format(cal.getTime());
-            new MakeRequestTask(service, mFragment, mFragment, date).execute();
-        } else {
-            toLoad = emails.size();
-            synchronized (mEmails) {
-                outer : for (Message message : emails) {
-                    for (Email email : mEmails) {
-                        if (email.id.equals(message.getId())) {
-                            // Log.d(Util.TAG_DEBUG, message.getId());
-                            continue outer;
-                        }
-                    }
-                    new EmailDataTask(message, this, service).execute();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void emailLoaded(Email email) {
-        ++loaded;
-        if (toLoad > 0) {
-            synchronized (mEmails) {
-                mEmails.add(email);
-            }
-        }
-        boolean foundSubscription = false;
-        for (Subscription subscription : mSubscriptions) {
-           if(subscription.getTitle().equals(email.getSender())) {
-               foundSubscription = true;
-               subscription.addEmail(email);
-           }
-        }
-        if (foundSubscription == false) {
-            Subscription subscription = new Subscription(email.getSender());
-            subscription.addEmail(email);
-            mSubscriptions.add(subscription);
-            filterSubs.add(subscription);
-        }
-        Collections.sort(mSubscriptions);
-        Collections.sort(filterSubs);
-        notifyDataSetChanged();
-        if (loaded == toLoad)
-            writeEmails();
-
-   }
-
-    @Override
-    public void emailCanceled() {
-        ++loaded;
-        if (loaded == toLoad)
-            writeEmails();
     }
 
     public void readEmails() {

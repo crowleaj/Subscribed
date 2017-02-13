@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.api.services.gmail.model.Message;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -34,19 +35,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
+import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
 import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SubscriptionsFragment.Callback, SpecificFragment.OnSpecificCallback, SplashFragment.AccountChooser,
-        EasyPermissions.PermissionCallbacks {
+        EasyPermissions.PermissionCallbacks, EmailDataTask.OnEmailLoaded, MakeRequestTask.OnEmailsReceived {
 
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -59,40 +64,22 @@ public class MainActivity extends AppCompatActivity
     private GoogleServices mServices;
 
     private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
-    private SubscriptionsFragment mSubscriptionsFrag;
+    private SubscriptionsFragment mSubscriptionsFrag = null;
 
+    private boolean splashShown = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
         mServices = new GoogleServices(this);
         String accountName = getPreferences(Context.MODE_PRIVATE)
                 .getString(PREF_ACCOUNT_NAME, null);
         if (accountName != null) {
+            reinflateLayout();
             mServices.getCredential().setSelectedAccountName(accountName);
-            mServices.getResultsFromApi();
             switchToSubsciptionsFragment();
         } else {
+            splashShown = true;
+            setContentView(R.layout.activity_main);
             Fragment frag = new SplashFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.drawer_layout, frag, "Splash");
@@ -107,11 +94,41 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void reinflateLayout() {
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
     public void switchToSubsciptionsFragment() {
-        mSubscriptionsFrag = new SubscriptionsFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, mSubscriptionsFrag, "Subscriptions");
-        ft.commit();
+        if (mSubscriptionsFrag == null) {
+            if (splashShown == true) {
+                splashShown = false;
+                reinflateLayout();
+            }
+            mSubscriptionsFrag = new SubscriptionsFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container, mSubscriptionsFrag, "Subscriptions");
+            ft.commit();
+        }
+        //mServices.getResultsFromApi();
+
     }
 
     public GoogleServices getServices() {
@@ -211,7 +228,7 @@ public class MainActivity extends AppCompatActivity
 //                            "This app requires Google Play Services. Please install " +
 //                                    "Google Play Services on your device and relaunch this app.");
                 } else {
-                    mServices.getResultsFromApi();
+                    switchToSubsciptionsFragment();
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
@@ -227,13 +244,13 @@ public class MainActivity extends AppCompatActivity
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         mServices.setAccountName(accountName);
-                        mServices.getResultsFromApi();
+                        switchToSubsciptionsFragment();
                     }
                 }
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    mServices.getResultsFromApi();
+                    switchToSubsciptionsFragment();
                 }
                 break;
         }
@@ -288,19 +305,66 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private int loaded = 0;
+    private int toLoad;
+
+    @Override
+    public void emailLoaded(Email email) {
+        ++loaded;
+        boolean foundSubscription = false;
+        for (Subscription subscription : mSubscriptions) {
+            if(subscription.getTitle().equals(email.getSender())) {
+                foundSubscription = true;
+                subscription.addEmail(email);
+            }
+        }
+        if (foundSubscription == false) {
+            Subscription subscription = new Subscription(email.getSender());
+            subscription.addEmail(email);
+            mSubscriptions.add(subscription);
+            mSubscriptionsFrag.mAdapter.updateFilter(subscription);
+        } else {
+            mSubscriptionsFrag.mAdapter.updateFilter(null);
+        }
+        Collections.sort(mSubscriptions);
+        if (loaded == toLoad)
+            writeEmails();
+
+    }
+
+    @Override
+    public void emailCanceled() {
+        ++loaded;
+        if (loaded == toLoad)
+            writeEmails();
+    }
+
     Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").setLenient().create();
 
+    private boolean read = false;
     public void readEmails() {
         Type listType = new TypeToken<List<Email>>(){}.getType();
         try {
-            InputStream is = getApplicationContext().openFileInput("EMAILS");
-            Reader reader = new BufferedReader(new InputStreamReader(is));
-            List<Email> mEmails = gson.fromJson(reader, listType);
-            reader.close();
-            mSubscriptionsFrag.mAdapter.populateSubscriptions(mServices.getService(), null);
+            if (read == false) {
+                read = true;
+                InputStream is = getApplicationContext().openFileInput("EMAILS");
+                Reader reader = new BufferedReader(new InputStreamReader(is));
+                List<Email> mEmails = gson.fromJson(reader, listType);
+                reader.close();
+                for (Email email : mEmails)
+                    emailLoaded(email);
+            }
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(mSubscriptions.get(0).getDate());
+            cal.add(Calendar.DATE, -1);
+            SimpleDateFormat formatter = new SimpleDateFormat("YYYY/MM/dd");
+            String date = formatter.format(cal.getTime());
+            new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, this, date).execute();
+            //mSubscriptionsFrag.mAdapter.populateSubscriptions(mServices.getService(), null);
 //            if (mFragment.mAdapter.mEmails.size() > 0)
         } catch (Exception e) {
-            new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, mSubscriptionsFrag).execute();
+            Log.d(Util.TAG_DEBUG, e.getMessage());
+            new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, this).execute();
             //e.printStackTrace();
         }
     }
@@ -309,21 +373,41 @@ public class MainActivity extends AppCompatActivity
         Type listType = new TypeToken<List<Email>>(){}.getType();
         try {
             FileOutputStream fos = getApplicationContext().openFileOutput("EMAILS", Context.MODE_PRIVATE);
-            fos.write(("{").getBytes());
+            fos.write(("[").getBytes());
             for (int i = 0; i < mSubscriptions.size(); i++) {
                 Subscription subscription = mSubscriptions.get(i);
                     for (Email email : subscription.getEmails()) {
                         fos.write((gson.toJson(email) + ",").getBytes());
                     }
             }
-            fos.write(("}").getBytes());
+            fos.write(("]").getBytes());
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d(Util.TAG_DEBUG, e.getMessage());
         }
+        Log.d(Util.TAG_DEBUG, "Emails written");
     }
 
-    public List<Subscription> getSubscriptions() {
+    public ArrayList<Subscription> getSubscriptions() {
         return mSubscriptions;
+    }
+
+    @Override
+    public void emailsReceived(List<Message> emails) {
+        //mAdapter.populateSubscriptions(mServices.getService(), emails);
+        if (emails == null) {
+            Log.d(Util.TAG_DEBUG, "NULLLL");
+
+        } else {
+            toLoad = emails.size();
+            outer : for (Message message : emails) {
+                for (Subscription subscription : mSubscriptions) {
+                    if (subscription.containsId(message.getId()))
+                        continue outer;
+                }
+                new EmailDataTask(message, this, mServices.getService()).execute();
+            }
+        }
     }
 }

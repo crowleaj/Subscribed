@@ -21,12 +21,15 @@ import android.view.ViewGroup;
 
 import com.google.api.services.gmail.model.Message;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
+import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
 import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -40,7 +43,7 @@ import static android.app.Activity.RESULT_OK;
  * Activities containing this fragment MUST implement the {@ link OnListFragmentInteractionListener}
  * interface.
  */
-public class SubscriptionsFragment extends Fragment implements MakeRequestTask.OnEmailsReceived, SearchView.OnQueryTextListener {
+public class SubscriptionsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
 
     // TODO: Customize parameter argument names
@@ -98,7 +101,7 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         list.setLayoutManager(manager);
-        mAdapter = new SubscriptionAdapter(this, mListener);
+        mAdapter = new SubscriptionAdapter(this, mListener, mListener.getSubscriptions());
         list.setAdapter(mAdapter);
         Log.d(Util.TAG_DEBUG, "onCreateView: I am making the subscriptions");
         //chooseAccount();
@@ -126,11 +129,6 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
     }
 
     @Override
-    public void emailsReceived(List<Message> emails) {
-        //mAdapter.populateSubscriptions(mServices.getService(), emails);
-    }
-
-    @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
@@ -155,7 +153,7 @@ public class SubscriptionsFragment extends Fragment implements MakeRequestTask.O
     public interface Callback {
         void Callback(ArrayList<Email> emails);
         GoogleServices getServices();
-        List<Subscription> getSubscriptions();
+        ArrayList<Subscription> getSubscriptions();
     }
 
 }
