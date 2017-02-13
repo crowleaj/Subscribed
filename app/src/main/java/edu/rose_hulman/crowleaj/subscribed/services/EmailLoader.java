@@ -20,19 +20,19 @@ public class EmailLoader implements EmailDataTask.OnEmailLoaded {
     private int toLoad;
     private ArrayList<Subscription> mSubscriptions;
     private OnLoaderUpdate mManager;
-    private EmailCache mCache;
+    private SubscriptionCache mCache;
 
     public EmailLoader(Context context, EmailManager manager) {
         mManager = manager;
         mSubscriptions = manager.getSubscriptions();
-        mCache = new EmailCache(context);
+        mCache = new SubscriptionCache(context);
     }
 
     private boolean read = false;
     public void readEmails() {
         if (read == false) {
             read = true;
-            List<Subscription> subscriptions = mCache.readEmails();
+            List<Subscription> subscriptions = mCache.readSubscriptions();
             if (subscriptions != null) {
                 for (Subscription subscription : subscriptions) {
                     mSubscriptions.add(subscription);
@@ -69,18 +69,22 @@ public class EmailLoader implements EmailDataTask.OnEmailLoaded {
         }
         Collections.sort(mSubscriptions);
         if (loaded == toLoad)
-            mCache.writeEmails(mSubscriptions);
+            mCache.writeSubscriptions(mSubscriptions);
     }
 
     @Override
     public void emailCanceled() {
         ++loaded;
         if (loaded == toLoad)
-            mCache.writeEmails(mSubscriptions);
+            mCache.writeSubscriptions(mSubscriptions);
     }
 
     public void setLoadCount(int loadCount) {
         toLoad = loadCount;
+    }
+
+    public void persistSubscriptions()  {
+        mCache.writeSubscriptions(mSubscriptions);
     }
 
     public interface OnLoaderUpdate {

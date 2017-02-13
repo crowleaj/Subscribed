@@ -24,16 +24,16 @@ import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
  * Created by alex on 2/13/17.
  */
 
-public class EmailCache {
+public class SubscriptionCache {
     private Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").setLenient().create();
     private Type listType = new TypeToken<List<Subscription>>(){}.getType();
     private Context mContext;
 
-    public EmailCache(Context context) {
+    public SubscriptionCache(Context context) {
         mContext = context;
     }
 
-    public void writeEmails(List<Subscription> subscriptions) {
+    public void writeSubscriptions(List<Subscription> subscriptions) {
         try {
             FileOutputStream fos = mContext.openFileOutput("EMAILS", Context.MODE_PRIVATE);
             fos.write(gson.toJson(subscriptions, listType).getBytes());
@@ -53,7 +53,7 @@ public class EmailCache {
         Log.d(Util.TAG_DEBUG, "Emails written");
     }
 
-    public ArrayList<Subscription> readEmails() {
+    public ArrayList<Subscription> readSubscriptions() {
         try {
             InputStream is = mContext.openFileInput("EMAILS");
             Reader reader = new BufferedReader(new InputStreamReader(is));
