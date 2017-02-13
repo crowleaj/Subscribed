@@ -1,6 +1,7 @@
 package edu.rose_hulman.crowleaj.subscribed.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,10 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
                 mCallback.onFragmentInteraction(emails.get(position));
             }
         });
+    }
+
+    public void deleteEmail(int position) {
+        //Logic for deleting email goes here
     }
 
     @Override

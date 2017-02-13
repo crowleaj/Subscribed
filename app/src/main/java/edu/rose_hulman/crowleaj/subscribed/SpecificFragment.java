@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
     public SpecificAdapter mAdapter;
     public static String mTitle;
     public static Toolbar mToolbar;
+    public RecyclerView mRecyclerView;
 
     public SpecificFragment() {
         // Required empty public constructor
@@ -66,11 +68,28 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
 
         //Recycler View
         RecyclerView list = (RecyclerView) view.findViewById(R.id.recycler_specific);
+        mRecyclerView = list;
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         list.setLayoutManager(manager);
         mAdapter = new SpecificAdapter(getArguments().<Email>getParcelableArrayList("key"), mListener);
         list.setAdapter(mAdapter);
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int swipedPosition = viewHolder.getAdapterPosition();
+                SpecificAdapter adapter = (SpecificAdapter) mRecyclerView.getAdapter();
+                adapter.deleteEmail(swipedPosition);
+            }
+        };
+        ItemTouchHelper TouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        TouchHelper.attachToRecyclerView(list);
         setHasOptionsMenu(true);
         return view;
     }
