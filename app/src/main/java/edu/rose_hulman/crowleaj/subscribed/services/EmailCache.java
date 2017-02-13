@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.Util;
@@ -25,7 +26,7 @@ import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 
 public class EmailCache {
     private Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").setLenient().create();
-    private Type listType = new TypeToken<List<Email>>(){}.getType();
+    private Type listType = new TypeToken<List<Subscription>>(){}.getType();
     private Context mContext;
 
     public EmailCache(Context context) {
@@ -33,17 +34,17 @@ public class EmailCache {
     }
 
     public void writeEmails(List<Subscription> subscriptions) {
-        Type listType = new TypeToken<List<Email>>(){}.getType();
         try {
             FileOutputStream fos = mContext.openFileOutput("EMAILS", Context.MODE_PRIVATE);
-            fos.write(("[").getBytes());
-            for (int i = 0; i < subscriptions.size(); i++) {
-                Subscription subscription = subscriptions.get(i);
-                for (Email email : subscription.getEmails()) {
-                    fos.write((gson.toJson(email) + ",").getBytes());
-                }
-            }
-            fos.write(("]").getBytes());
+            fos.write(gson.toJson(subscriptions, listType).getBytes());
+//            fos.write(("[").getBytes());
+//            for (int i = 0; i < subscriptions.size(); i++) {
+//                Subscription subscription = subscriptions.get(i);
+//                for (Email email : subscription.getEmails()) {
+//                    fos.write((gson.toJson(email) + ",").getBytes());
+//                }
+//            }
+//            fos.write(("]").getBytes());
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,11 +53,11 @@ public class EmailCache {
         Log.d(Util.TAG_DEBUG, "Emails written");
     }
 
-    public List<Email> readEmails() {
+    public ArrayList<Subscription> readEmails() {
         try {
             InputStream is = mContext.openFileInput("EMAILS");
             Reader reader = new BufferedReader(new InputStreamReader(is));
-            List<Email> mEmails = gson.fromJson(reader, listType);
+            ArrayList<Subscription> mEmails = gson.fromJson(reader, listType);
             reader.close();
             return mEmails;
         } catch (Exception e) {

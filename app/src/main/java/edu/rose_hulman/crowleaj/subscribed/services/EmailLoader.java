@@ -32,11 +32,17 @@ public class EmailLoader implements EmailDataTask.OnEmailLoaded {
     public void readEmails() {
         if (read == false) {
             read = true;
-            List<Email> mEmails = mCache.readEmails();
-            if (mEmails != null) {
-                for (Email email : mEmails)
-                    emailLoaded(email);
+            List<Subscription> subscriptions = mCache.readEmails();
+            if (subscriptions != null) {
+                for (Subscription subscription : subscriptions) {
+                    mSubscriptions.add(subscription);
+                    mManager.onFilterUpdate(subscription);
+                }
             }
+//            if (mEmails != null) {
+//                for (Email email : mEmails)
+//                    emailLoaded(email);
+//            }
         }
         mManager.fetchEmails();
     }
