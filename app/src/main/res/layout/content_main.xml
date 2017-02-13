@@ -5,13 +5,8 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="edu.rose_hulman.crowleaj.subscribed.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:context="edu.rose_hulman.crowleaj.subscribed.MainActivity">
 
      <android.support.v7.widget.RecyclerView
          android:id="@+id/recycler_view"
