@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void Callback(ArrayList<Email> emails) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        SpecificFragment fragment = SpecificFragment.newInstance(emails);
+        SpecificFragment fragment = SpecificFragment.newInstance(emails, (Toolbar) findViewById(R.id.toolbar));
         ft.replace(R.id.container, fragment);
         ft.addToBackStack("detail");
         ft.commit();

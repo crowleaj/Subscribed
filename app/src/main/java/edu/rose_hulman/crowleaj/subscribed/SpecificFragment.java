@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
     private OnSpecificCallback mListener;
     public SpecificAdapter mAdapter;
     public static String mTitle;
+    public static Toolbar mToolbar;
 
     public SpecificFragment() {
         // Required empty public constructor
@@ -38,8 +40,10 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
      * this fragment using the provided parameters.
      *
      */
-    public static SpecificFragment newInstance(ArrayList<Email> emails) {
+    public static SpecificFragment newInstance(ArrayList<Email> emails, Toolbar toolbar) {
         mTitle = emails.get(0).getSender();
+        toolbar.setTitle(mTitle);
+        mToolbar = toolbar;
         SpecificFragment fragment = new SpecificFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList("key", emails);
@@ -59,6 +63,7 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
         View view = inflater.inflate(R.layout.fragment_specific, container, false);
 //        TextView title = (TextView) view.findViewById(R.id.sub_title);
 //        title.setText(mTitle);
+
         //Recycler View
         RecyclerView list = (RecyclerView) view.findViewById(R.id.recycler_specific);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
@@ -95,6 +100,11 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
         mListener = null;
     }
 
+    @Override
+    public void onDestroy(){
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        super.onDestroy();
+    }
 
     /**
      * This interface must be implemented by activities that contain this
