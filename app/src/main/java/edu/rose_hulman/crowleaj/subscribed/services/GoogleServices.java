@@ -1,4 +1,4 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.services;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,6 +19,8 @@ import com.google.api.services.gmail.GmailScopes;
 
 import java.util.Arrays;
 
+import edu.rose_hulman.crowleaj.subscribed.MainActivity;
+import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;

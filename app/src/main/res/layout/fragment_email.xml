@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.rose_hulman.crowleaj.subscribed.EmailFragment">
+    tools:context="edu.rose_hulman.crowleaj.subscribed.fragments.EmailFragment">
 
     <WebView
         android:layout_width="match_parent"

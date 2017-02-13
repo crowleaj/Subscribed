@@ -1,13 +1,8 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.fragments;
 
-import android.Manifest;
-import android.accounts.AccountManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,22 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.api.services.gmail.model.Message;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
+import edu.rose_hulman.crowleaj.subscribed.R;
+import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
-import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
-import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
-
-import static android.app.Activity.RESULT_OK;
+import edu.rose_hulman.crowleaj.subscribed.services.GoogleServices;
 
 
 /**

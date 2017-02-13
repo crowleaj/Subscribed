@@ -6,14 +6,12 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,36 +21,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.google.api.services.gmail.model.Message;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
+import edu.rose_hulman.crowleaj.subscribed.fragments.EmailFragment;
+import edu.rose_hulman.crowleaj.subscribed.fragments.SpecificFragment;
+import edu.rose_hulman.crowleaj.subscribed.fragments.SplashFragment;
+import edu.rose_hulman.crowleaj.subscribed.fragments.SubscriptionsFragment;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
-import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
-import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
-import pub.devrel.easypermissions.AfterPermissionGranted;
+import edu.rose_hulman.crowleaj.subscribed.services.EmailManager;
+import edu.rose_hulman.crowleaj.subscribed.services.GoogleServices;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SubscriptionsFragment.Callback, SpecificFragment.OnSpecificCallback, SplashFragment.AccountChooser,
-        EasyPermissions.PermissionCallbacks, MakeRequestTask.OnEmailsReceived, EmailFragment.OnFragmentInteractionListener {
+        EasyPermissions.PermissionCallbacks, EmailFragment.OnFragmentInteractionListener {
 
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -73,8 +59,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mManager = new EmailManager(this, mSubscriptions);
         mServices = new GoogleServices(this);
+        mManager = new EmailManager(this, mSubscriptions);
         String accountName = getPreferences(Context.MODE_PRIVATE)
                 .getString(PREF_ACCOUNT_NAME, null);
         if (accountName != null) {
@@ -128,6 +114,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void readEmails() {
+        mManager.requestEmails(mServices.getService());
+    }
+
     public GoogleServices getServices() {
         return mServices;
     }
@@ -153,9 +143,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -308,53 +295,8 @@ public class MainActivity extends AppCompatActivity
         mSubscriptionsFrag.mAdapter.updateFilter(subscription);
     }
 
-    private boolean read = false;
-    public void readEmails() {
-            if (read == false) {
-                read = true;
-                List<Email> mEmails = Util.readEmails(this);
-                if (mEmails != null) {
-                    for (Email email : mEmails)
-                        mManager.emailLoaded(email);
-                }
-            }
-        requestEmails();
-    }
-
-    public void requestEmails() {
-        int size = mSubscriptions.size();
-        if (size == 0) {
-            new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, this).execute();
-        } else {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(mSubscriptions.get(0).getDate());
-            cal.add(Calendar.DATE, -1);
-            SimpleDateFormat formatter = new SimpleDateFormat("YYYY/MM/dd");
-            String date = formatter.format(cal.getTime());
-            new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, this, date).execute();
-        }
-    }
-
     public ArrayList<Subscription> getSubscriptions() {
         return mSubscriptions;
-    }
-
-    @Override
-    public void emailsReceived(List<Message> emails) {
-        //mAdapter.populateSubscriptions(mServices.getService(), emails);
-        if (emails == null) {
-            Log.d(Util.TAG_DEBUG, "NULLLL");
-
-        } else {
-            mManager.setLoadCount(emails.size());
-            outer : for (Message message : emails) {
-                for (Subscription subscription : mSubscriptions) {
-                    if (subscription.containsId(message.getId()))
-                        continue outer;
-                }
-                new EmailDataTask(message, mManager, mServices.getService()).execute();
-            }
-        }
     }
 
     @Override

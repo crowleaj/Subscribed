@@ -1,4 +1,4 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,10 +11,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.adapters.SpecificAdapter;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 

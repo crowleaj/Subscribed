@@ -4,8 +4,8 @@ package edu.rose_hulman.crowleaj.subscribed.tasks;
  * Created by alex on 1/30/17.
  */
 
+import android.app.Activity;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.MainActivity;
-import edu.rose_hulman.crowleaj.subscribed.SubscriptionsFragment;
 import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 
@@ -29,15 +28,14 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
 public class MakeRequestTask extends AsyncTask<Void, Void, List<Message>> {
     private com.google.api.services.gmail.Gmail mService = null;
     private Exception mLastError = null;
-    private Fragment mActivity;
+    private Activity mActivity;
     private OnEmailsReceived mReceiver;
     private String mDate = null;
-    public MakeRequestTask(com.google.api.services.gmail.Gmail service, Fragment activity,  OnEmailsReceived receiver) {
-        mActivity = activity;
+    public MakeRequestTask(com.google.api.services.gmail.Gmail service, Activity activity, OnEmailsReceived receiver) {
         mService = service;
         mReceiver = receiver;
     }
-    public MakeRequestTask(com.google.api.services.gmail.Gmail service, Fragment activity,  OnEmailsReceived receiver, String date) {
+    public MakeRequestTask(com.google.api.services.gmail.Gmail service, Activity activity,  OnEmailsReceived receiver, String date) {
         this(service, activity, receiver);
         mDate = date;
     }

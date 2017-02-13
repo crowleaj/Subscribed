@@ -1,7 +1,6 @@
 package edu.rose_hulman.crowleaj.subscribed.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import edu.rose_hulman.crowleaj.subscribed.R;
-import edu.rose_hulman.crowleaj.subscribed.SpecificFragment;
+import edu.rose_hulman.crowleaj.subscribed.fragments.SpecificFragment;
 import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 

@@ -1,9 +1,10 @@
-package edu.rose_hulman.crowleaj.subscribed;
+package edu.rose_hulman.crowleaj.subscribed.services;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
@@ -13,24 +14,31 @@ import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
  * Created by alex on 2/13/17.
  */
 
-public class EmailManager implements EmailDataTask.OnEmailLoaded{
+public class EmailLoader implements EmailDataTask.OnEmailLoaded {
 
     private int loaded = 0;
     private int toLoad;
-
     private ArrayList<Subscription> mSubscriptions;
-    private MainActivity activity;
+    private OnLoaderUpdate mManager;
+    private EmailCache mCache;
 
-    public EmailManager(MainActivity activity, ArrayList<Subscription> subscriptions) {
-        this.activity = activity;
-        mSubscriptions = subscriptions;
+    public EmailLoader(Context context, EmailManager manager) {
+        mManager = manager;
+        mSubscriptions = manager.getSubscriptions();
+        mCache = new EmailCache(context);
     }
 
-    @Override
-    public void emailCanceled() {
-        ++loaded;
-        if (loaded == toLoad)
-            Util.writeEmails(activity, mSubscriptions);
+    private boolean read = false;
+    public void readEmails() {
+        if (read == false) {
+            read = true;
+            List<Email> mEmails = mCache.readEmails();
+            if (mEmails != null) {
+                for (Email email : mEmails)
+                    emailLoaded(email);
+            }
+        }
+        mManager.fetchEmails();
     }
 
     @Override
@@ -49,16 +57,28 @@ public class EmailManager implements EmailDataTask.OnEmailLoaded{
             Subscription subscription = new Subscription(email.getSender());
             subscription.addEmail(email);
             mSubscriptions.add(subscription);
-            activity.updateFilter(subscription);
+            mManager.onFilterUpdate(subscription);
         } else {
-            activity.updateFilter(null);
+            mManager.onFilterUpdate(null);
         }
         Collections.sort(mSubscriptions);
         if (loaded == toLoad)
-            Util.writeEmails(activity, mSubscriptions);
+            mCache.writeEmails(mSubscriptions);
+    }
+
+    @Override
+    public void emailCanceled() {
+        ++loaded;
+        if (loaded == toLoad)
+            mCache.writeEmails(mSubscriptions);
     }
 
     public void setLoadCount(int loadCount) {
         toLoad = loadCount;
+    }
+
+    public interface OnLoaderUpdate {
+        void onFilterUpdate(Subscription subscription);
+        void fetchEmails();
     }
 }
