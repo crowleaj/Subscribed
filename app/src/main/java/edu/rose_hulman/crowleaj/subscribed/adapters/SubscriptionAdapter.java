@@ -40,7 +40,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private ArrayList<Subscription> filterSubs = new ArrayList<>();
     private Context mContext;
     private SubscriptionsFragment.Callback mCallback;
-    public List<Email> mEmails = Collections.synchronizedList(new ArrayList<Email>());
     public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -71,7 +70,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         mCallback = callback;
         filterSubs.addAll(mSubscriptions);
         mFragment = fragment;
-       // populateSubscriptions(activity);
     }
 
 
@@ -146,65 +144,5 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             Collections.sort(filterSubs);
         }
         notifyDataSetChanged();
-    }
-    public void populateSubscriptions(com.google.api.services.gmail.Gmail service, List<Message> emails) {
-        notifyDataSetChanged();
-//        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
-//        Type listType = new TypeToken<List<Email>>(){}.getType();
-//        InputStream is = mContext.getResources().openRawResource(R.raw.mock_emails);
-//        Reader reader = new BufferedReader(new InputStreamReader(is));
-//        List<Email> testEmails = gson.fromJson(reader, listType);
-//        Collections.sort(emails);
-////        try {
-////            reader.close();
-////        } catch (IOException e) {
-////            e.printStackTrace();
-////        }
-//        //Log.d("TAG", emails.get(0).getDateString().toString());
-//        mSubscriptions.add(new Subscription(emails.get(0).getSender()));
-//        mSubscriptions.get(0).addEmail(emails.get(0));
-//        Log.d("TAG", mSubscriptions.get(0).getTitle());
-//        boolean didContain;
-//        for (int i = 1; i < emails.size(); i++) {
-//            didContain = false;
-//            for (int j = 0; j < mSubscriptions.size(); j++) {
-//                if (mSubscriptions.get(j).getTitle().equals(emails.get(i).getSender())) {
-//                    mSubscriptions.get(j).addEmail(emails.get(i));
-//                    didContain = true;
-//                }
-//            }
-//            if (!didContain) {
-//                mSubscriptions.add(new Subscription(emails.get(i).getSender()));
-//                mSubscriptions.get(mSubscriptions.size()-1).addEmail(emails.get(i));
-//            }
-//        }
-//        filterSubs.addAll(mSubscriptions);
-//        notifyDataSetChanged();
-    }
-
-    public void readEmails() {
-        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
-        Type listType = new TypeToken<List<Email>>(){}.getType();
-        try {
-            InputStream is = mContext.openFileInput("EMAILS");
-            Reader reader = new BufferedReader(new InputStreamReader(is));
-            mEmails = gson.fromJson(reader, listType);
-            reader.close();
-        } catch (Exception e) {
-            //e.printStackTrace();
-        }
-    }
-
-    public void writeEmails() {
-        Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").create();
-        Type listType = new TypeToken<List<Email>>(){}.getType();
-        try {
-            FileOutputStream fos = mContext.openFileOutput("EMAILS", Context.MODE_PRIVATE);
-            fos.write(gson.toJson(mEmails, listType).getBytes());
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mEmails.clear();
     }
 }

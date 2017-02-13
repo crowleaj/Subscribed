@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     private static final String PREF_ACCOUNT_NAME = "accountName";
 
-    private SubscriptionAdapter mAdapter;
-
     private GoogleServices mServices;
 
     private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
@@ -198,16 +196,6 @@ public class MainActivity extends AppCompatActivity
 //        ft.commit();
     }
 
-    /**
-     * Called when an activity launched here (specifically, AccountPicker
-     * and authorization) exits, giving you the requestCode you started it with,
-     * the resultCode it returned, and any additional data from it.
-     * @param requestCode code indicating which activity result is incoming.
-     * @param resultCode code indicating the result of the incoming
-     *     activity result.
-     * @param data Intent (containing result data) returned by incoming
-     *     activity result.
-     */
     @Override
     public void onActivityResult(
             int requestCode, int resultCode, Intent data) {
@@ -215,9 +203,7 @@ public class MainActivity extends AppCompatActivity
         switch(requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-//                    mOutputText.setText(
-//                            "This app requires Google Play Services. Please install " +
-//                                    "Google Play Services on your device and relaunch this app.");
+                    //TODO: throw some error
                 } else {
                     switchToSubsciptionsFragment();
                 }
@@ -247,16 +233,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Attempts to set the account used with the API credentials. If an account
-     * name was previously saved it will use that one; otherwise an account
-     * picker dialog will be shown to the user. Note that the setting the
-     * account to use with the credentials object requires the app to have the
-     * GET_ACCOUNTS permission, which is requested here if it is not already
-     * present. The AfterPermissionGranted annotation indicates that this
-     * function will be rerun automatically whenever the GET_ACCOUNTS permission
-     * is granted.
-     */
     //@AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
     public void chooseAccount() {
         if (EasyPermissions.hasPermissions(
