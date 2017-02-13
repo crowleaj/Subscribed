@@ -51,7 +51,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SubscriptionsFragment.Callback, SpecificFragment.OnSpecificCallback, SplashFragment.AccountChooser,
-        EasyPermissions.PermissionCallbacks, EmailDataTask.OnEmailLoaded, MakeRequestTask.OnEmailsReceived, EmailFragment.OnFragmentInteractionListener {
+        EasyPermissions.PermissionCallbacks, MakeRequestTask.OnEmailsReceived, EmailFragment.OnFragmentInteractionListener {
 
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -67,9 +67,12 @@ public class MainActivity extends AppCompatActivity
     private SubscriptionsFragment mSubscriptionsFrag = null;
 
     private boolean splashShown = false;
+
+    private EmailManager mManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mManager = new EmailManager(this, mSubscriptions);
         mServices = new GoogleServices(this);
         String accountName = getPreferences(Context.MODE_PRIVATE)
                 .getString(PREF_ACCOUNT_NAME, null);
@@ -297,39 +300,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private int loaded = 0;
-    private int toLoad;
-
-    @Override
-    public void emailLoaded(Email email) {
-       if (email == null)
-           return;
-        ++loaded;
-        boolean foundSubscription = false;
-        for (Subscription subscription : mSubscriptions) {
-            if(subscription.getTitle().equals(email.getSender())) {
-                foundSubscription = true;
-                subscription.addEmail(email);
-            }
-        }
-        if (foundSubscription == false) {
-            Subscription subscription = new Subscription(email.getSender());
-            subscription.addEmail(email);
-            mSubscriptions.add(subscription);
-            mSubscriptionsFrag.mAdapter.updateFilter(subscription);
-        } else {
-            mSubscriptionsFrag.mAdapter.updateFilter(null);
-        }
-        Collections.sort(mSubscriptions);
-        if (loaded == toLoad)
-            Util.writeEmails(this, mSubscriptions);
-    }
-
-    @Override
-    public void emailCanceled() {
-        ++loaded;
-        if (loaded == toLoad)
-            Util.writeEmails(this, mSubscriptions);
+    public void updateFilter(Subscription subscription) {
+        mSubscriptionsFrag.mAdapter.updateFilter(subscription);
     }
 
     private boolean read = false;
@@ -339,7 +311,7 @@ public class MainActivity extends AppCompatActivity
                 List<Email> mEmails = Util.readEmails(this);
                 if (mEmails != null) {
                     for (Email email : mEmails)
-                        emailLoaded(email);
+                        mManager.emailLoaded(email);
                 }
             }
         requestEmails();
@@ -370,13 +342,13 @@ public class MainActivity extends AppCompatActivity
             Log.d(Util.TAG_DEBUG, "NULLLL");
 
         } else {
-            toLoad = emails.size();
+            mManager.setLoadCount(emails.size());
             outer : for (Message message : emails) {
                 for (Subscription subscription : mSubscriptions) {
                     if (subscription.containsId(message.getId()))
                         continue outer;
                 }
-                new EmailDataTask(message, this, mServices.getService()).execute();
+                new EmailDataTask(message, mManager, mServices.getService()).execute();
             }
         }
     }
