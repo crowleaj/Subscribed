@@ -28,7 +28,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 
 public class GoogleServices {
-    private final SubscriptionsFragment mFragment;
+    private final MainActivity mFragment;
     private final Activity mActivity;
 
     private static final String[] SCOPES = { GmailScopes.GMAIL_LABELS, GmailScopes.GMAIL_READONLY };
@@ -39,12 +39,12 @@ public class GoogleServices {
 
     private com.google.api.services.gmail.Gmail mService = null;
 
-    public GoogleServices(SubscriptionsFragment fragment) {
+    public GoogleServices(MainActivity fragment) {
         mFragment = fragment;
-        mActivity = fragment.getActivity();
+        mActivity = fragment;
         //Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
-                fragment.getContext(), Arrays.asList(SCOPES))
+                fragment.getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
     }
 
@@ -81,11 +81,7 @@ public class GoogleServices {
                     transport, jsonFactory, mCredential)
                     .setApplicationName("Gmail API Android Quickstart")
                     .build();
-            mFragment.mAdapter.readEmails();
-            if (mFragment.mAdapter.mEmails.size() > 0)
-                mFragment.mAdapter.populateSubscriptions(mService, null);
-            else
-                new MakeRequestTask(mService, mFragment, mFragment).execute();
+            mFragment.readEmails();
         }
     }
 

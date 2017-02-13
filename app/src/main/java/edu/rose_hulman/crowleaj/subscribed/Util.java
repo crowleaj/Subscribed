@@ -7,4 +7,6 @@ package edu.rose_hulman.crowleaj.subscribed;
 public class Util {
     public static final String TAG_GOOGLE = "GOOG";
     public static final String TAG_DEBUG = "DEBUG";
+
+
 }

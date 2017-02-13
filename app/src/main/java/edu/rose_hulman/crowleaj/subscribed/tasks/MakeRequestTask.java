@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.rose_hulman.crowleaj.subscribed.MainActivity;
 import edu.rose_hulman.crowleaj.subscribed.SubscriptionsFragment;
 import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
@@ -95,7 +96,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<Message>> {
             } else if (mLastError instanceof UserRecoverableAuthIOException) {
                 mActivity.startActivityForResult(
                         ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                        SubscriptionsFragment.REQUEST_AUTHORIZATION);
+                        MainActivity.REQUEST_AUTHORIZATION);
             }
             else {
                 Log.d(Util.TAG_DEBUG, "The following error occurred:\n" + mLastError.getClass().getCanonicalName()
