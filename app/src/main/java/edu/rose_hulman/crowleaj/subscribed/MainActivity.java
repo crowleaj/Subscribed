@@ -204,7 +204,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Email email) {
-
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        EmailFragment fragment = EmailFragment.newInstance(email);
+        ft.replace(R.id.container, fragment);
+        ft.addToBackStack("email");
+        ft.commit();
     }
 
     /**
