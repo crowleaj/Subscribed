@@ -57,8 +57,8 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_specific, container, false);
-        TextView title = (TextView) view.findViewById(R.id.sub_title);
-        title.setText(mTitle);
+//        TextView title = (TextView) view.findViewById(R.id.sub_title);
+//        title.setText(mTitle);
         //Recycler View
         RecyclerView list = (RecyclerView) view.findViewById(R.id.recycler_specific);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
