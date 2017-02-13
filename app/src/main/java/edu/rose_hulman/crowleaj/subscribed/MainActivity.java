@@ -51,7 +51,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SubscriptionsFragment.Callback, SpecificFragment.OnSpecificCallback, SplashFragment.AccountChooser,
-        EasyPermissions.PermissionCallbacks, EmailDataTask.OnEmailLoaded, MakeRequestTask.OnEmailsReceived {
+        EasyPermissions.PermissionCallbacks, EmailDataTask.OnEmailLoaded, MakeRequestTask.OnEmailsReceived, EmailFragment.OnFragmentInteractionListener {
 
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -413,5 +413,10 @@ public class MainActivity extends AppCompatActivity
                 new EmailDataTask(message, this, mServices.getService()).execute();
             }
         }
+    }
+
+    @Override
+    public void onEmailCallback() {
+
     }
 }
