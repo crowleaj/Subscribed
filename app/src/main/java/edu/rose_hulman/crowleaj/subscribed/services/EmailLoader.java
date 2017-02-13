@@ -22,10 +22,10 @@ public class EmailLoader implements EmailDataTask.OnEmailLoaded {
     private OnLoaderUpdate mManager;
     private SubscriptionCache mCache;
 
-    public EmailLoader(Context context, EmailManager manager) {
+    public EmailLoader(SubscriptionCache cache, EmailManager manager) {
         mManager = manager;
         mSubscriptions = manager.getSubscriptions();
-        mCache = new SubscriptionCache(context);
+        mCache = cache;
     }
 
     private boolean read = false;

@@ -34,6 +34,7 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 import edu.rose_hulman.crowleaj.subscribed.services.EmailManager;
 import edu.rose_hulman.crowleaj.subscribed.services.GoogleServices;
+import edu.rose_hulman.crowleaj.subscribed.services.SubscriptionCache;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
@@ -54,11 +55,13 @@ public class MainActivity extends AppCompatActivity
     private boolean splashShown = false;
 
     private EmailManager mManager;
+    private SubscriptionCache mCache;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mServices = new GoogleServices(this);
-        mManager = new EmailManager(this, mSubscriptions);
+        mCache = new SubscriptionCache(this);
+        mManager = new EmailManager(this, mSubscriptions, mCache);
         String accountName = getPreferences(Context.MODE_PRIVATE)
                 .getString(PREF_ACCOUNT_NAME, null);
         if (accountName != null) {

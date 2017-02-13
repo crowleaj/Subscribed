@@ -55,8 +55,8 @@ public class EmailDataTask extends AsyncTask<Void, Void, Email> {
                 int i = 0;
                 String textPart = "";
                 for(MessagePart mPart : part.getParts()){
-                    if (!mPart.getMimeType().equals("text/html"))
-                        Log.d(Util.TAG_DEBUG, mPart.getMimeType());
+                //    if (!mPart.getMimeType().equals("text/html"))
+                 //       Log.d(Util.TAG_DEBUG, mPart.getMimeType());
                     if (mPart.getMimeType().equals("text/plain"))
                         textPart = StringUtils.newStringUtf8(Base64.decodeBase64(mPart.getBody().getData()));
                     else {

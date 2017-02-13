@@ -26,10 +26,10 @@ public class EmailManager implements MakeRequestTask.OnEmailsReceived, EmailLoad
     private com.google.api.services.gmail.Gmail mService;
     private EmailLoader mLoader;
 
-    public EmailManager(MainActivity activity, ArrayList<Subscription> subscriptions) {
+    public EmailManager(MainActivity activity, ArrayList<Subscription> subscriptions, SubscriptionCache cache) {
         this.activity = activity;
         mSubscriptions = subscriptions;
-        mLoader = new EmailLoader(activity, this);
+        mLoader = new EmailLoader(cache, this);
     }
 
     public void requestEmails(com.google.api.services.gmail.Gmail service) {
