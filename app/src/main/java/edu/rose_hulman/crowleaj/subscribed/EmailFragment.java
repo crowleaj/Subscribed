@@ -1,12 +1,18 @@
 package edu.rose_hulman.crowleaj.subscribed;
 
+import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 
@@ -20,16 +26,10 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
  * create an instance of this fragment.
  */
 public class EmailFragment extends android.support.v4.app.Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_PARAM = "email";
 
     private OnFragmentInteractionListener mListener;
+    private Email mEmail;
 
     public EmailFragment() {
         // Required empty public constructor
@@ -41,10 +41,10 @@ public class EmailFragment extends android.support.v4.app.Fragment {
      *
      * @return A new instance of fragment EmailFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static EmailFragment newInstance(Email emal) {
+    public static EmailFragment newInstance(Email email) {
         EmailFragment fragment = new EmailFragment();
         Bundle args = new Bundle();
+        args.putParcelable(ARG_PARAM, email);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class EmailFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            mEmail = getArguments().getParcelable(ARG_PARAM);
         }
     }
 
@@ -61,14 +61,23 @@ public class EmailFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_email, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onEmailCallback();
+        View view = inflater.inflate(R.layout.fragment_email, container, false);
+        WebView webview = (WebView) view.findViewById(R.id.webview);
+        String url = "";
+        String current = mEmail.getSubject();
+        for (int i = 0; i < current.length(); i++) {
+            if (current.substring(i, i + 1).equals(" ")) {
+                url += "+";
+            } else {
+                url += current.substring(i, i + 1);
+            }
         }
+        Log.d("URL", url);
+//        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+//        intent.putExtra(SearchManager.QUERY, mEmail.getSubject());
+//        startActivity(intent);
+       // webview.loadUrl("www.google.com/");
+        return view;
     }
 
     @Override
@@ -99,7 +108,6 @@ public class EmailFragment extends android.support.v4.app.Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onEmailCallback();
     }
 }

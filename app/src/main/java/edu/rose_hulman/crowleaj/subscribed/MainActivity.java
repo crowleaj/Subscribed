@@ -2,6 +2,7 @@ package edu.rose_hulman.crowleaj.subscribed;
 
 import android.Manifest;
 import android.accounts.AccountManager;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -200,11 +201,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Email email) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        EmailFragment fragment = EmailFragment.newInstance(email);
-        ft.replace(R.id.container, fragment);
-        ft.addToBackStack("email");
-        ft.commit();
+        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+        intent.putExtra(SearchManager.QUERY, email.getSubject());
+        startActivity(intent);
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        EmailFragment fragment = EmailFragment.newInstance(email);
+//        ft.replace(R.id.container, fragment);
+//        ft.addToBackStack("email");
+//        ft.commit();
     }
 
     /**
