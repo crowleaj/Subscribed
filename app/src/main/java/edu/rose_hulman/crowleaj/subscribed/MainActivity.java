@@ -85,13 +85,6 @@ public class MainActivity extends AppCompatActivity
             ft.replace(R.id.drawer_layout, frag, "Splash");
             ft.commit();
         }
-//        Fragment frag = new SubscriptionsFragment();
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.container, frag, "Fragment");
-//        ft.commit();
-//        chooseAccount();
-//        getResultsFromApi();
-
     }
 
     public void reinflateLayout() {
@@ -274,11 +267,6 @@ public class MainActivity extends AppCompatActivity
     public void chooseAccount() {
         if (EasyPermissions.hasPermissions(
                 this, Manifest.permission.GET_ACCOUNTS)) {
-//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//                ImageFragment fragment = ImageFragment.newInstance(caption, url);
-//                transaction.replace(R.id.fragment_stuff, fragment);
-//                transaction.addToBackStack("Image");
-//                transaction.commit();
                 // Start a dialog from which the user can choose an account
                 startActivityForResult(
                         mServices.getCredential().newChooseAccountIntent(),
@@ -314,6 +302,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void emailLoaded(Email email) {
+       if (email == null)
+           return;
         ++loaded;
         boolean foundSubscription = false;
         for (Subscription subscription : mSubscriptions) {
@@ -332,65 +322,41 @@ public class MainActivity extends AppCompatActivity
         }
         Collections.sort(mSubscriptions);
         if (loaded == toLoad)
-            writeEmails();
-
+            Util.writeEmails(this, mSubscriptions);
     }
 
     @Override
     public void emailCanceled() {
         ++loaded;
         if (loaded == toLoad)
-            writeEmails();
+            Util.writeEmails(this, mSubscriptions);
     }
-
-    Gson gson = new GsonBuilder().setDateFormat("MM/dd/yyyy").setLenient().create();
 
     private boolean read = false;
     public void readEmails() {
-        Type listType = new TypeToken<List<Email>>(){}.getType();
-        try {
             if (read == false) {
                 read = true;
-                InputStream is = getApplicationContext().openFileInput("EMAILS");
-                Reader reader = new BufferedReader(new InputStreamReader(is));
-                List<Email> mEmails = gson.fromJson(reader, listType);
-                reader.close();
-                for (Email email : mEmails)
-                    emailLoaded(email);
+                List<Email> mEmails = Util.readEmails(this);
+                if (mEmails != null) {
+                    for (Email email : mEmails)
+                        emailLoaded(email);
+                }
             }
+        requestEmails();
+    }
+
+    public void requestEmails() {
+        int size = mSubscriptions.size();
+        if (size == 0) {
+            new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, this).execute();
+        } else {
             Calendar cal = Calendar.getInstance();
             cal.setTime(mSubscriptions.get(0).getDate());
             cal.add(Calendar.DATE, -1);
             SimpleDateFormat formatter = new SimpleDateFormat("YYYY/MM/dd");
             String date = formatter.format(cal.getTime());
             new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, this, date).execute();
-            //mSubscriptionsFrag.mAdapter.populateSubscriptions(mServices.getService(), null);
-//            if (mFragment.mAdapter.mEmails.size() > 0)
-        } catch (Exception e) {
-            Log.d(Util.TAG_DEBUG, e.getMessage());
-            new MakeRequestTask(mServices.getService(), mSubscriptionsFrag, this).execute();
-            //e.printStackTrace();
         }
-    }
-
-    public void writeEmails() {
-        Type listType = new TypeToken<List<Email>>(){}.getType();
-        try {
-            FileOutputStream fos = getApplicationContext().openFileOutput("EMAILS", Context.MODE_PRIVATE);
-            fos.write(("[").getBytes());
-            for (int i = 0; i < mSubscriptions.size(); i++) {
-                Subscription subscription = mSubscriptions.get(i);
-                    for (Email email : subscription.getEmails()) {
-                        fos.write((gson.toJson(email) + ",").getBytes());
-                    }
-            }
-            fos.write(("]").getBytes());
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(Util.TAG_DEBUG, e.getMessage());
-        }
-        Log.d(Util.TAG_DEBUG, "Emails written");
     }
 
     public ArrayList<Subscription> getSubscriptions() {
