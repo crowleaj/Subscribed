@@ -20,6 +20,7 @@ public class Subscription implements Comparable, Parcelable {
     Date date;
     public int clicks;
     Boolean favorited;
+    boolean aboveThresh;
 
     public Subscription(String subTitle) {
         title = subTitle;
@@ -29,7 +30,8 @@ public class Subscription implements Comparable, Parcelable {
         mEmails = in.createTypedArrayList(Email.CREATOR);
         title = in.readString();
         clicks = in.readInt();
-        favorited = in.readByte() != 0;
+        favorited = false;
+        aboveThresh = false;
     }
 
     public static final Creator<Subscription> CREATOR = new Creator<Subscription>() {
@@ -112,6 +114,7 @@ public class Subscription implements Comparable, Parcelable {
         parcel.writeString(title);
         parcel.writeInt(clicks);
         parcel.writeByte((byte) (favorited ? 1 : 0));
+        parcel.writeByte((byte) (aboveThresh ? 1 : 0));
     }
 
     @Override
@@ -128,5 +131,13 @@ public class Subscription implements Comparable, Parcelable {
                 return true;
         }
         return false;
+    }
+
+    public void setAboveThresh(boolean bool) {
+        aboveThresh = bool;
+    }
+
+    public boolean getThresh() {
+        return aboveThresh;
     }
 }

@@ -34,6 +34,7 @@ public class MakeRequestTask extends AsyncTask<Void, Void, List<Message>> {
     public MakeRequestTask(com.google.api.services.gmail.Gmail service, Activity activity, OnEmailsReceived receiver) {
         mService = service;
         mReceiver = receiver;
+        mActivity = activity;
     }
     public MakeRequestTask(com.google.api.services.gmail.Gmail service, Activity activity,  OnEmailsReceived receiver, String date) {
         this(service, activity, receiver);

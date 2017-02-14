@@ -61,6 +61,7 @@ public class EmailLoader implements EmailDataTask.OnEmailLoaded {
         }
         if (foundSubscription == false) {
             Subscription subscription = new Subscription(email.getSender());
+            subscription.setFavorited(false);
             subscription.addEmail(email);
             mSubscriptions.add(subscription);
             mManager.onFilterUpdate(subscription);

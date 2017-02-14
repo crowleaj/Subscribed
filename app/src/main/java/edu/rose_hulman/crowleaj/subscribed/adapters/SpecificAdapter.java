@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,14 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Log.d(Util.TAG_DEBUG,"Content: " + emails.get(position).getContent());
         holder.mSubject.setText(emails.get(position).getSubject());
+        holder.mFlag.setChecked(emails.get(position).IsFlagged());
+        holder.mFlag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emails.get(position).setFlag(!(emails.get(position).IsFlagged()));
+                notifyDataSetChanged();
+            }
+        });
        // holder.mBody.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         //holder.mBody.setScrollbarFadingEnabled(true);
 //        holder.mBody.setPadding(0,0,0,0);
@@ -72,35 +81,39 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
 
     public void deleteEmail(final int position) {
         //Logic for deleting email goes here
-        final boolean[] wasDeleted = {true};
-        final Email temp = emails.get(position);
-        emails.remove(position);
-        notifyItemRemoved(position);
-        Snackbar snack = Snackbar.make(mView, "Undo deletion?", Snackbar.LENGTH_LONG);
-        snack.setAction("UNDO", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                emails.add(position, temp);
-                notifyItemInserted(position);
-                mRecycler.scrollToPosition(position);
-                wasDeleted[0] = false;
-            }
-        });
-        snack.addCallback(new Snackbar.Callback() {
-
-            @Override
-            public void onDismissed(Snackbar snackbar, int event) {
-                if (wasDeleted[0]) {
-                    mDeleteCallback.onDelete(temp);
+        if (emails.get(position).IsFlagged()) {
+            notifyDataSetChanged();
+        } else {
+            final boolean[] wasDeleted = {true};
+            final Email temp = emails.get(position);
+            emails.remove(position);
+            notifyItemRemoved(position);
+            Snackbar snack = Snackbar.make(mView, "Undo deletion?", Snackbar.LENGTH_LONG);
+            snack.setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    emails.add(position, temp);
+                    notifyItemInserted(position);
+                    mRecycler.scrollToPosition(position);
+                    wasDeleted[0] = false;
                 }
-            }
+            });
+            snack.addCallback(new Snackbar.Callback() {
 
-            @Override
-            public void onShown(Snackbar snackbar) {
-                //Do nothing
-            }
-        });
-        snack.show();
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    if (wasDeleted[0]) {
+                        mDeleteCallback.onDelete(temp);
+                    }
+                }
+
+                @Override
+                public void onShown(Snackbar snackbar) {
+                    //Do nothing
+                }
+            });
+            snack.show();
+        }
     }
 
     @Override
@@ -113,6 +126,7 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
         private WebView mBody;
         private TextView mDate;
         private View mView;
+        private CheckBox mFlag;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -120,6 +134,7 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
             mSubject = (TextView) itemView.findViewById(R.id.subject_specific);
             mBody = (WebView) itemView.findViewById(R.id.body_specific);
             mDate = (TextView) itemView.findViewById(R.id.date_specific);
+            mFlag = (CheckBox) itemView.findViewById(R.id.flag);
         }
     }
 }

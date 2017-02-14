@@ -33,7 +33,7 @@ public class GoogleServices {
     private final MainActivity mFragment;
     private final Activity mActivity;
 
-    private static final String[] SCOPES = { GmailScopes.GMAIL_LABELS, GmailScopes.GMAIL_READONLY };
+    private static final String[] SCOPES = { GmailScopes.GMAIL_LABELS, GmailScopes.GMAIL_MODIFY };
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
 

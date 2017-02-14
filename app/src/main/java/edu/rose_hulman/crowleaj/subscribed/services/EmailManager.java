@@ -15,6 +15,7 @@ import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
+import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDeleteTask;
 import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
 
 /**
@@ -81,11 +82,13 @@ public class EmailManager implements MakeRequestTask.OnEmailsReceived, EmailLoad
     }
 
     public void onDeleteEmail(Email email, String account) {
-        try {
-            Log.d("WORK", account);
-            mService.users().messages().trash(account, email.id);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new EmailDeleteTask(email.id, account, mService).execute();
+//        try {
+//            Log.d("WORK", account);
+//
+//            mService.users().messages().trash(account, email.id).execute();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

@@ -18,6 +18,7 @@ public class Email implements Comparable, Parcelable {
     public String sender;
     public String content;
     public boolean matchesQuery;
+    public boolean isFlagged;
 
     public Email(String id) {
         this.id = id;
@@ -28,6 +29,7 @@ public class Email implements Comparable, Parcelable {
         sender = in.readString();
         content = in.readString();
         matchesQuery = false;
+        isFlagged = false;
     }
 
     public static final Creator<Email> CREATOR = new Creator<Email>() {
@@ -70,6 +72,7 @@ public class Email implements Comparable, Parcelable {
         parcel.writeString(subject);
         parcel.writeString(sender);
         parcel.writeString(content);
+        parcel.writeByte((byte) (isFlagged ? 1 : 0));
     }
 
     public String getSubject() {
@@ -78,5 +81,13 @@ public class Email implements Comparable, Parcelable {
 
     public String getContent() {
         return content;
+    }
+
+    public boolean IsFlagged() {
+        return isFlagged;
+    }
+
+    public void setFlag(boolean bool) {
+        isFlagged = bool;
     }
 }
