@@ -83,12 +83,5 @@ public class EmailManager implements MakeRequestTask.OnEmailsReceived, EmailLoad
 
     public void onDeleteEmail(Email email, String account) {
         new EmailDeleteTask(email.id, account, mService).execute();
-//        try {
-//            Log.d("WORK", account);
-//
-//            mService.users().messages().trash(account, email.id).execute();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 }
