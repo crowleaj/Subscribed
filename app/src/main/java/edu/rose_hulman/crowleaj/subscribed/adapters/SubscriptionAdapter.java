@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.google.api.services.gmail.model.Message;
@@ -47,6 +49,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         private TextView mSubscriptionCount;
         private TextView mSubscriptionPreview;
         private TextView mSubscriptionDate;
+        private CheckBox mfavoritebox;
         private View mSubView;
 
         public ViewHolder(View itemView) {
@@ -56,6 +59,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             mSubscriptionCount = (TextView) itemView.findViewById(R.id.subscription_count);
             mSubscriptionPreview = (TextView) itemView.findViewById(R.id.subscription_preview);
             mSubscriptionDate = (TextView) itemView.findViewById(R.id.subscription_date);
+            mfavoritebox = (CheckBox) itemView.findViewById(R.id.favorite_subscription);
         }
 
         @Override
@@ -91,6 +95,15 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 mCallback.Callback(mSubscriptions.get(position).getEmails());
             }
         });
+        holder.mfavoritebox.setChecked(mSubscriptions.get(position).isFavorited());
+        holder.mfavoritebox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSubscriptions.get(position).setFavorited(!mSubscriptions.get(position).isFavorited());
+                Collections.sort(mSubscriptions);
+                notifyDataSetChanged();
+            }
+        });
     }
 
 
@@ -99,7 +112,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         return (null != filterSubs ? filterSubs.size() : 0);
     }
 
-    public ArrayList<Subscription> getmSubscriptions(){
+    public ArrayList<Subscription> getmSubscriptions() {
         return mSubscriptions;
     }
 
@@ -123,8 +136,8 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                     for (Subscription item : mSubscriptions) {
                         //should find all emails that match the query
                         matchingEmails = item.getMatchingEmails(newText.toLowerCase());
-                        }
                     }
+                }
                 // Set on UI Thread
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override

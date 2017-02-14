@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.lang.*;
 
 /**
  * Created by alex on 1/23/17.
@@ -18,7 +19,7 @@ public class Subscription implements Comparable, Parcelable {
     String title;
     Date date;
     public int clicks;
-    boolean favorited;
+    Boolean favorited;
 
     public Subscription(String subTitle) {
         title = subTitle;
@@ -93,10 +94,13 @@ public class Subscription implements Comparable, Parcelable {
         return mEmails;
     }
 
-    public boolean isFavorited() {
+    public Boolean isFavorited() {
         return favorited;
     }
 
+    public boolean setFavorited(boolean bool) {
+        return favorited = bool;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -112,7 +116,10 @@ public class Subscription implements Comparable, Parcelable {
 
     @Override
     public int compareTo(Object o) {
-        return ((Subscription)o).getDate().compareTo(getDate());// date.compareTo(((Email)o).getDateString());
+        if (((Subscription)o).isFavorited().compareTo(isFavorited()) != 0) {
+            return ((Subscription)o).isFavorited().compareTo(isFavorited());
+        }
+        return (((Subscription)o).getDate().compareTo(getDate()));// date.compareTo(((Email)o).getDateString());
     }
 
     public boolean containsId(String id) {
