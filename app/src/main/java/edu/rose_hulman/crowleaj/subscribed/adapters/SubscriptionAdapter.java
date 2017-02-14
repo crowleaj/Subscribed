@@ -1,11 +1,15 @@
 package edu.rose_hulman.crowleaj.subscribed.adapters;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -90,16 +94,17 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.mSubscription.setText(mSubscriptions.get(position).getTitle());
         holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize() + "");
         /////Needs work
-        if (mSubscriptions.get(position).getThresh()) {
-            holder.mSubView.setBackgroundColor(mContext.getResources().getColor(R.color.aboveThreshold));
-        }
-        if (!mSubscriptions.get(position).getThresh() && mSubscriptions.get(position).getSize() > mThresh) {
-            mSubscriptions.get(position).setAboveThresh(true);
-        }
-        if (mSubscriptions.get(position).getThresh() && mSubscriptions.get(position).getSize() < mThresh) {
-            mSubscriptions.get(position).setAboveThresh(false);
-        }
+//        if (mSubscriptions.get(position).getThresh()) {
+//            holder.mSubView.setBackgroundColor(mContext.getResources().getColor(R.color.aboveThreshold));
+//        }
+//        if (!mSubscriptions.get(position).getThresh() && mSubscriptions.get(position).getSize() > mThresh) {
+//            mSubscriptions.get(position).setAboveThresh(true);
+//        }
+//        if (mSubscriptions.get(position).getThresh() && mSubscriptions.get(position).getSize() < mThresh) {
+//            mSubscriptions.get(position).setAboveThresh(false);
+//        }
         //////
+
         holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
         holder.mSubscriptionDate.setText(mSubscriptions.get(position).getDateString());
         holder.mSubView.setOnClickListener(new View.OnClickListener() {

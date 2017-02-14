@@ -2,7 +2,6 @@ package edu.rose_hulman.crowleaj.subscribed;
 
 import android.Manifest;
 import android.accounts.AccountManager;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +11,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,8 +28,8 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
-import android.support.v4.app.Fragment;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import edu.rose_hulman.crowleaj.subscribed.fragments.AboutFragment;
@@ -152,8 +154,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-
         return true;
     }
 
@@ -165,6 +165,15 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
 
             return true;
+        }
+
+        if (id == R.id.action_delete) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(getLayoutInflater().inflate(R.layout.dropdown_delete, null));
+
+            builder.setNegativeButton("CANCEL", null);
+            builder.setPositiveButton("CONFIRM", null);
+            builder.create().show();
         }
 
         return super.onOptionsItemSelected(item);
