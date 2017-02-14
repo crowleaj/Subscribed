@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.adapters.SubscriptionAdapter;
+import android.support.v4.app.Fragment;
+import android.widget.TextView;
+
+import edu.rose_hulman.crowleaj.subscribed.fragments.AboutFragment;
 import edu.rose_hulman.crowleaj.subscribed.fragments.EmailFragment;
 import edu.rose_hulman.crowleaj.subscribed.fragments.SpecificFragment;
 import edu.rose_hulman.crowleaj.subscribed.fragments.SplashFragment;
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private EmailManager mManager;
     private SubscriptionCache mCache;
     private String mAccountName;
+    private String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity
         mManager = new EmailManager(this, mSubscriptions, mCache);
         String accountName = getPreferences(Context.MODE_PRIVATE)
                 .getString(PREF_ACCOUNT_NAME, null);
+
         if (accountName != null) {
             mAccountName = accountName;
             reinflateLayout();
@@ -101,6 +107,12 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        TextView gmail = (TextView)header.findViewById(R.id.user_gmail);
+        gmail.setText(mAccountName);
+        TextView name = (TextView)header.findViewById(R.id.user_name);
+        name.setText(name.getText());
+
     }
 
     public void switchToSubsciptionsFragment() {
@@ -162,17 +174,32 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Fragment switchTo = null;
+
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            switchTo = new SubscriptionsFragment();
         } else if (id == R.id.nav_gallery) {
+            switchTo = new AboutFragment();
 
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
+
+        }
+
+
+        if(switchTo!=null){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container,switchTo);
+            Log.d("NAv", "onNavigationItemSelected: hello");
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+                getSupportFragmentManager().popBackStackImmediate();
+            }
+            ft.commit();
 
         }
 
@@ -219,6 +246,7 @@ public class MainActivity extends AppCompatActivity
                         data.getExtras() != null) {
                     String accountName =
                             data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    Log.d("Name", "onActivityResult: "+AccountManager.AUTHENTICATOR_ATTRIBUTES_NAME);
                     if (accountName != null) {
                         SharedPreferences settings =
 
