@@ -32,6 +32,7 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
     public static String mTitle;
     public static Toolbar mToolbar;
     public RecyclerView mRecyclerView;
+    private OnDeleteCallback mDelete;
 
     public SpecificFragment() {
         // Required empty public constructor
@@ -72,7 +73,7 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         list.setLayoutManager(manager);
-        mAdapter = new SpecificAdapter(getArguments().<Email>getParcelableArrayList("key"), mListener);
+        mAdapter = new SpecificAdapter(getArguments().<Email>getParcelableArrayList("key"), mListener, mDelete, getContext(), view, list);
         list.setAdapter(mAdapter);
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
@@ -94,19 +95,12 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
         return view;
     }
 
-
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnSpecificCallback) {
             mListener = (OnSpecificCallback) context;
+            mDelete = (OnDeleteCallback) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -137,5 +131,9 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
      */
     public interface OnSpecificCallback {
         void onFragmentInteraction(Email email);
+    }
+
+    public interface OnDeleteCallback {
+        void onDelete(Email email);
     }
 }

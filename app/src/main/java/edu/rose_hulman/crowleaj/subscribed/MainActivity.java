@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,7 +40,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SubscriptionsFragment.Callback, SpecificFragment.OnSpecificCallback, SplashFragment.AccountChooser,
-        EasyPermissions.PermissionCallbacks, EmailFragment.OnFragmentInteractionListener {
+        EasyPermissions.PermissionCallbacks, EmailFragment.OnFragmentInteractionListener, SpecificFragment.OnDeleteCallback {
 
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity
 
     private EmailManager mManager;
     private SubscriptionCache mCache;
+    private String mAccountName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity
         String accountName = getPreferences(Context.MODE_PRIVATE)
                 .getString(PREF_ACCOUNT_NAME, null);
         if (accountName != null) {
+            mAccountName = accountName;
             reinflateLayout();
             mServices.getCredential().setSelectedAccountName(accountName);
             switchToSubsciptionsFragment();
@@ -281,5 +284,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onEmailCallback() {
 
+    }
+
+    @Override
+    public void onDelete(Email email) {
+        Log.d("TEst", "TO DELETE ");
+        mManager.onDeleteEmail(email, mAccountName);
     }
 }

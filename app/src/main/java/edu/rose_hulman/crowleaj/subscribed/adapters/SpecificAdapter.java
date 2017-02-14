@@ -1,5 +1,7 @@
 package edu.rose_hulman.crowleaj.subscribed.adapters;
 
+import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,10 +26,19 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
 public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHolder>  {
     private ArrayList<Email> emails;
     private SpecificFragment.OnSpecificCallback mCallback;
+    private SpecificFragment.OnDeleteCallback mDeleteCallback;
+    private Context mContext;
+    private View mView;
+    private RecyclerView mRecycler;
 
-    public SpecificAdapter(ArrayList<Email> m, SpecificFragment.OnSpecificCallback callBack) {
+    public SpecificAdapter(ArrayList<Email> m, SpecificFragment.OnSpecificCallback callBack,
+                           SpecificFragment.OnDeleteCallback deleteCallback, Context context, View view, RecyclerView list) {
         emails = m;
         mCallback = callBack;
+        mDeleteCallback = deleteCallback;
+        mContext = context;
+        mView = view;
+        mRecycler = list;
     }
 
     @Override
@@ -58,8 +70,37 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
         });
     }
 
-    public void deleteEmail(int position) {
+    public void deleteEmail(final int position) {
         //Logic for deleting email goes here
+        final boolean[] wasDeleted = {true};
+        final Email temp = emails.get(position);
+        emails.remove(position);
+        notifyItemRemoved(position);
+        Snackbar snack = Snackbar.make(mView, "Undo deletion?", Snackbar.LENGTH_LONG);
+        snack.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emails.add(position, temp);
+                notifyItemInserted(position);
+                mRecycler.scrollToPosition(position);
+                wasDeleted[0] = false;
+            }
+        });
+        snack.addCallback(new Snackbar.Callback() {
+
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                if (wasDeleted[0]) {
+                    mDeleteCallback.onDelete(temp);
+                }
+            }
+
+            @Override
+            public void onShown(Snackbar snackbar) {
+                //Do nothing
+            }
+        });
+        snack.show();
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.api.services.gmail.model.Message;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.MainActivity;
 import edu.rose_hulman.crowleaj.subscribed.Util;
+import edu.rose_hulman.crowleaj.subscribed.models.Email;
 import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 import edu.rose_hulman.crowleaj.subscribed.tasks.EmailDataTask;
 import edu.rose_hulman.crowleaj.subscribed.tasks.MakeRequestTask;
@@ -76,5 +78,14 @@ public class EmailManager implements MakeRequestTask.OnEmailsReceived, EmailLoad
 
     protected ArrayList<Subscription> getSubscriptions() {
         return mSubscriptions;
+    }
+
+    public void onDeleteEmail(Email email, String account) {
+        try {
+            Log.d("WORK", account);
+            mService.users().messages().trash(account, email.id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
