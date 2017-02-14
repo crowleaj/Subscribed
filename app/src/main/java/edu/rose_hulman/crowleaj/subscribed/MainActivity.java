@@ -3,6 +3,7 @@ package edu.rose_hulman.crowleaj.subscribed;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -174,6 +176,23 @@ public class MainActivity extends AppCompatActivity
             builder.setNegativeButton("CANCEL", null);
             builder.setPositiveButton("CONFIRM", null);
             builder.create().show();
+            return true;
+        }
+
+        if (id == R.id.action_threshold) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View view = getLayoutInflater().inflate(R.layout.set_threshold, null);
+            builder.setView(view);
+            final EditText edit = (EditText) view.findViewById(R.id.edit_thresh);
+            builder.setNegativeButton("CANCEL", null);
+            builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mSubscriptionsFrag.mAdapter.updateThreshold(Integer.parseInt(edit.getText().toString()));
+                }
+            });
+            builder.create().show();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

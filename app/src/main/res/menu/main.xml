@@ -7,6 +7,11 @@
         android:title="@string/action_delete"
         app:showAsAction="never" />
 
+    <item
+        android:title="@string/action_threshold"
+        android:id="@+id/action_threshold"
+        app:showAsAction="never"/>
+
     <!--<item-->
         <!--android:id="@+id/spinner"-->
         <!--android:title="Spinner"-->

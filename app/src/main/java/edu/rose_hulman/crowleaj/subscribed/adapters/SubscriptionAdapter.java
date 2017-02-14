@@ -79,7 +79,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         mCallback = callback;
         filterSubs.addAll(mSubscriptions);
         mFragment = fragment;
-        mThresh = 20;
+        mThresh = 0;
     }
 
 
@@ -93,18 +93,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mSubscription.setText(mSubscriptions.get(position).getTitle());
         holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize() + "");
-        /////Needs work
-//        if (mSubscriptions.get(position).getThresh()) {
-//            holder.mSubView.setBackgroundColor(mContext.getResources().getColor(R.color.aboveThreshold));
-//        }
-//        if (!mSubscriptions.get(position).getThresh() && mSubscriptions.get(position).getSize() > mThresh) {
-//            mSubscriptions.get(position).setAboveThresh(true);
-//        }
-//        if (mSubscriptions.get(position).getThresh() && mSubscriptions.get(position).getSize() < mThresh) {
-//            mSubscriptions.get(position).setAboveThresh(false);
-//        }
-        //////
-
         holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
         holder.mSubscriptionDate.setText(mSubscriptions.get(position).getDateString());
         holder.mSubView.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +110,11 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 notifyDataSetChanged();
             }
         });
+//        if (mSubscriptions.get(position).getThresh()) {
+//            holder.mSubView.setBackgroundColor(mContext.getResources().getColor(R.color.aboveThreshold));
+//        } else {
+//            holder.mSubView.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_dark_background));
+//        }
     }
 
 
@@ -130,7 +123,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         return (null != filterSubs ? filterSubs.size() : 0);
     }
 
-    public ArrayList<Subscription> getmSubscriptions() {
+    public ArrayList<Subscription> getSubscriptions() {
         return mSubscriptions;
     }
 
@@ -173,6 +166,18 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         if (subscription != null) {
             filterSubs.add(subscription);
             Collections.sort(filterSubs);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void updateThreshold(int thresh) {
+        Log.d("test", thresh+"");
+        for (int i = 0; i < mSubscriptions.size(); i++) {
+            if (mSubscriptions.get(i).getSize() >= thresh) {
+                mSubscriptions.get(i).setAboveThresh(true);
+            } else {
+                mSubscriptions.get(i).setAboveThresh(false);
+            }
         }
         notifyDataSetChanged();
     }

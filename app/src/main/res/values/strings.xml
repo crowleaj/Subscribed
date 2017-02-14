@@ -11,6 +11,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_delete">Power Delete</string>
+    <string name="action_threshold">Set Threshold</string>
     <string name="action_lookup">Search</string>
     <string name="title_activity_subscriptions">Subscription</string>
     <string name="about_fragment_text">This app was written by Alex Crowley, Aaron Bartee and Anirudh Singh.
