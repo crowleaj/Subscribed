@@ -14,7 +14,7 @@
     <string name="action_threshold">Set Threshold</string>
     <string name="action_lookup">Search</string>
     <string name="title_activity_subscriptions">Subscription</string>
-    <string name="about_fragment_text">This app was written by Alex Crowley, Aaron Bartee and Anirudh Singh.\n Features:\n Sync Gmail by allowing our app to access contacts and your gmail\n Use Navigation drawer to access the features\n Tap into your subscriptions to access all emails\n Favorite the subscriptions you enjoy the most\nFlag the emails you want to save\n Swipe left or right to delete the emails from gmail\n Long press the subscriptions you want to blacklist</string>
+    <string name="about_fragment_text">This app was written by Alex Crowley, Aaron Bartee and Anirudh Singh.\n Features:\n Sync Gmail by allowing our app to access contacts and your gmail\n Use Navigation drawer to access the features\n Tap into your subscriptions to access all emails\n Favorite the subscriptions you enjoy the most\nFlag the emails you want to save\n Swipe right to delete the emails from gmail\n Long press the subscriptions you want to blacklist</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
