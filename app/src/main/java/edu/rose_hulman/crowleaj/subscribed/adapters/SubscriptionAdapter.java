@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,7 +51,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private SubscriptionsFragment.Callback mCallback;
     public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
     private int mThresh;
-    public ArrayList<Subscription> blackList = new ArrayList<>();
+    public ArrayList<Subscription> blackList;
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSubscription;
@@ -58,11 +59,11 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         private TextView mSubscriptionPreview;
         private TextView mSubscriptionDate;
         private CheckBox mfavoritebox;
-        private View mSubView;
+        private CardView mSubView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mSubView = itemView;
+            mSubView = (CardView) itemView.findViewById(R.id.sub_card);
             mSubscription = (TextView) itemView.findViewById(R.id.subscription_title);
             mSubscriptionCount = (TextView) itemView.findViewById(R.id.subscription_count);
             mSubscriptionPreview = (TextView) itemView.findViewById(R.id.subscription_preview);
@@ -76,13 +77,16 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         }
     }
 
-    public SubscriptionAdapter(SubscriptionsFragment fragment, SubscriptionsFragment.Callback callback, ArrayList<Subscription> subscriptions) {
+    public SubscriptionAdapter(SubscriptionsFragment fragment, SubscriptionsFragment.Callback callback,
+                               ArrayList<Subscription> subscriptions, ArrayList<Subscription> black, int thresh) {
         mContext = fragment.getContext();
         mSubscriptions = subscriptions;
         mCallback = callback;
         filterSubs.addAll(mSubscriptions);
         mFragment = fragment;
-        mThresh = 0;
+        mThresh = thresh;
+        blackList = black;
+        Collections.sort(mSubscriptions);
     }
 
 
@@ -126,18 +130,18 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 notifyDataSetChanged();
             }
         });
-//        if (mSubscriptions.get(position).getThresh()) {
-//            holder.mSubView.setBackgroundColor(mContext.getResources().getColor(R.color.aboveThreshold));
-//        } else {
-//            holder.mSubView.setBackgroundColor(mContext.getResources().getColor(R.color.cardview_dark_background));
-//        }
+        if (mSubscriptions.get(position).getSize() >= mThresh) {
+            holder.mSubView.setCardBackgroundColor(mContext.getResources().getColor(R.color.aboveThreshold));
+        } else {
+            holder.mSubView.setCardBackgroundColor(mContext.getResources().getColor(R.color.cardview_dark_background));
+        }
     }
 
 
 
     @Override
     public int getItemCount() {
-        return (null != filterSubs ? filterSubs.size() : 0);
+        return mSubscriptions.size();
     }
 
     public ArrayList<Subscription> getSubscriptions() {
@@ -192,14 +196,14 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
     public void updateThreshold(int thresh) {
-        Log.d("test", thresh+"");
-        for (int i = 0; i < mSubscriptions.size(); i++) {
-            if (mSubscriptions.get(i).getSize() >= thresh) {
-                mSubscriptions.get(i).setAboveThresh(true);
-            } else {
-                mSubscriptions.get(i).setAboveThresh(false);
-            }
-        }
+        mThresh = thresh;
+//        for (int i = 0; i < mSubscriptions.size(); i++) {
+//            if (mSubscriptions.get(i).getSize() >= thresh) {
+//                mSubscriptions.get(i).setAboveThresh(true);
+//            } else {
+//                mSubscriptions.get(i).setAboveThresh(false);
+//            }
+//        }
         notifyDataSetChanged();
     }
 }

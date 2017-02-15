@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     private GoogleServices mServices;
 
     private ArrayList<Subscription> mSubscriptions = new ArrayList<>();
+    private ArrayList<Subscription> mBlackList = new ArrayList<>();
     private SubscriptionsFragment mSubscriptionsFrag = null;
 
     private boolean splashShown = false;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity
     private SubscriptionCache mCache;
     private String mAccountName;
     private String name;
+    private int mThresh = 30;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +191,7 @@ public class MainActivity extends AppCompatActivity
             builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    mThresh = Integer.parseInt(edit.getText().toString());
                     mSubscriptionsFrag.mAdapter.updateThreshold(Integer.parseInt(edit.getText().toString()));
                 }
             });
@@ -333,6 +336,16 @@ public class MainActivity extends AppCompatActivity
 
     public ArrayList<Subscription> getSubscriptions() {
         return mSubscriptions;
+    }
+
+    @Override
+    public ArrayList<Subscription> getBlackList() {
+        return mBlackList;
+    }
+
+    @Override
+    public int getThresh() {
+        return mThresh;
     }
 
     @Override

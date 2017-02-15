@@ -88,7 +88,7 @@ public class SubscriptionsFragment extends Fragment implements SearchView.OnQuer
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         list.setLayoutManager(manager);
-        mAdapter = new SubscriptionAdapter(this, mListener, mListener.getSubscriptions());
+        mAdapter = new SubscriptionAdapter(this, mListener, mListener.getSubscriptions(), mListener.getBlackList(), mListener.getThresh());
         list.setAdapter(mAdapter);
         Log.d(Util.TAG_DEBUG, "onCreateView: I am making the subscriptions");
         //chooseAccount();
@@ -141,6 +141,8 @@ public class SubscriptionsFragment extends Fragment implements SearchView.OnQuer
         void Callback(ArrayList<Email> emails);
         GoogleServices getServices();
         ArrayList<Subscription> getSubscriptions();
+        ArrayList<Subscription> getBlackList();
+        int getThresh();
     }
 
 }
