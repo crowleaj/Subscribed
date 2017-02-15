@@ -43,6 +43,7 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
     public SpecificAdapter(ArrayList<Email> m, SpecificFragment.OnSpecificCallback callBack,
                            SpecificFragment.OnDeleteCallback deleteCallback, Context context, View view, RecyclerView list) {
         emails = m;
+        filterSubs.addAll(emails);
         mCallback = callBack;
         mDeleteCallback = deleteCallback;
         mContext = context;
@@ -59,12 +60,12 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Log.d(Util.TAG_DEBUG,"Content: " + emails.get(position).getContent());
-        holder.mSubject.setText(emails.get(position).getSubject());
-        holder.mFlag.setChecked(emails.get(position).IsFlagged());
+        holder.mSubject.setText(filterSubs.get(position).getSubject());
+        holder.mFlag.setChecked(filterSubs.get(position).IsFlagged());
         holder.mFlag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emails.get(position).setFlag(!(emails.get(position).IsFlagged()));
+                filterSubs.get(position).setFlag(!(filterSubs.get(position).IsFlagged()));
                 notifyDataSetChanged();
             }
         });
@@ -78,29 +79,39 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
 //        holder.mBody.loadData(emails.get(position).getContent(), "text/html", "UTF-8");
        // holder.mBody.setText(Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT));
         //Html.fromHtml(emails.get(position).getContent(), Html.FROM_HTML_MODE_COMPACT)
-        holder.mDate.setText(emails.get(position).getFormattedDate());
+        holder.mDate.setText(filterSubs.get(position).getFormattedDate());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.onFragmentInteraction(emails.get(position));
+                mCallback.onFragmentInteraction(filterSubs.get(position));
             }
         });
     }
 
     public void deleteEmail(final int position) {
         //Logic for deleting email goes here
-        if (emails.get(position).IsFlagged()) {
+        if (filterSubs.get(position).IsFlagged()) {
             notifyDataSetChanged();
         } else {
             final boolean[] wasDeleted = {true};
-            final Email temp = emails.get(position);
-            emails.remove(position);
+            final Email temp = filterSubs.get(position);
+            filterSubs.remove(position);
+            int pos = 0;
+            for (int i = 0; i < emails.size(); i++) {
+                if (emails.get(i).id.equals(temp.id)) {
+                    pos = i;
+                    break;
+                }
+            }
+            final int removePos = pos;
+            emails.remove(removePos);
             notifyItemRemoved(position);
             Snackbar snack = Snackbar.make(mView, "Undo deletion?", Snackbar.LENGTH_LONG);
             snack.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    emails.add(position, temp);
+                    filterSubs.add(position, temp);
+                    emails.add(removePos, temp);
                     notifyItemInserted(position);
                     mRecycler.scrollToPosition(position);
                     wasDeleted[0] = false;
@@ -126,7 +137,7 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return emails.size();
+        return filterSubs.size();
     }
 
     public void filter(final String newText) {
@@ -135,7 +146,6 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 // Clear the filter list
                 filterSubs.clear();
 
@@ -147,9 +157,10 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
                     // Iterate in the original List and add it to filter list...
                     for (Email item : emails) {
                         //should find all emails that match the query
-                        matchingEmails = item.getMatchingEmails(newText.toLowerCase());
-                        if (matchingEmails.size() > 0)
+                        boolean matched = item.getMatchingEmails(newText.toLowerCase());
+                        if (matched) {
                             filterSubs.add(item);
+                        }
                     }
                 }
                 // Set on UI Thread

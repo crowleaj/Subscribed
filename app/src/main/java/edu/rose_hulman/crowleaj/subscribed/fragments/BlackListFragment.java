@@ -60,7 +60,7 @@ public class BlackListFragment extends android.support.v4.app.Fragment {
         Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_blacklist);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(new BlackListAdapter(getContext(), mListener, mListener.onBlackListInteraction(),mListener.getAllSubs()));
+        recyclerView.setAdapter(new BlackListAdapter(getContext(), mListener, mListener.onBlackListInteraction(),mListener.getAllSubs(), mListener.getFilteredSubs()));
         return view;
     }
 
@@ -95,5 +95,6 @@ public class BlackListFragment extends android.support.v4.app.Fragment {
     public interface OnBlackListCallback {
         ArrayList<Subscription> onBlackListInteraction();
         ArrayList<Subscription> getAllSubs();
+        ArrayList<Subscription> getFilteredSubs();
     }
 }

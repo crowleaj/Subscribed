@@ -46,7 +46,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     private final SubscriptionsFragment mFragment;
     private ArrayList<Subscription> mSubscriptions;
-    private ArrayList<Subscription> filterSubs = new ArrayList<>();
+    public ArrayList<Subscription> filterSubs = new ArrayList<>();
     private Context mContext;
     private SubscriptionsFragment.Callback mCallback;
     public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
@@ -113,9 +113,17 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             public boolean onLongClick(View view) {
                 mSubscriptions.get(position).setBlackListed(true);
                 Toast.makeText(mContext, "Just blacklisted "+mSubscriptions.get(position).getTitle(),Toast.LENGTH_LONG).show();
-
-                blackList.add(mSubscriptions.get(position));
-                mSubscriptions.remove(position);
+                String subName = filterSubs.get(position).getTitle();
+                blackList.add(filterSubs.get(position));
+                filterSubs.remove(position);
+                int subRemove = 0;
+                for (int i = 0; i < mSubscriptions.size(); i++) {
+                    if (mSubscriptions.get(i).getTitle().equals(subName)) {
+                        subRemove = i;
+                        break;
+                    }
+                }
+                mSubscriptions.remove(subRemove);
                 notifyDataSetChanged();
                 Log.d("Toast", "onLongClick:"+ blackList.size());
                 return true;

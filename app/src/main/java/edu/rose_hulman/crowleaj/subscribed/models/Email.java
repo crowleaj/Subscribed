@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by alex on 1/23/17.
@@ -92,4 +93,14 @@ public class Email implements Comparable, Parcelable {
     }
 
 
+    public boolean getMatchingEmails(String query) {
+        if (content.contains(query))
+            return true;
+        else if(sender.toLowerCase().contains(query))
+            return true;
+
+        else if(subject.toLowerCase().contains(query))
+            return true;
+        return false;
+    }
 }

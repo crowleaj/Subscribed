@@ -22,12 +22,14 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
     private final BlackListFragment.OnBlackListCallback mListener;
     private ArrayList<Subscription> blackSubs;
     private ArrayList<Subscription> allSubs;
+    private ArrayList<Subscription> filterSubs;
     private Context mContext;
 
-    public BlackListAdapter(Context context, BlackListFragment.OnBlackListCallback callback, ArrayList<Subscription> blackSubscriptions, ArrayList<Subscription> allSubscriptions) {
+    public BlackListAdapter(Context context, BlackListFragment.OnBlackListCallback callback, ArrayList<Subscription> blackSubscriptions, ArrayList<Subscription> allSubscriptions, ArrayList<Subscription> filteredSubs) {
         mListener = callback;
         allSubs = allSubscriptions;
         blackSubs = blackSubscriptions;
+        filterSubs = filteredSubs;
         mContext = context;
     }
 
@@ -46,6 +48,7 @@ public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.View
             public boolean onLongClick(View v) {
                 Toast.makeText(mContext, "Unblacklisted "+blackSubs.get(position).getTitle(),Toast.LENGTH_LONG).show();
                 allSubs.add(blackSubs.get(position));
+                filterSubs.add(blackSubs.get(position));
                 blackSubs.remove(position);
                 notifyDataSetChanged();
                 return false;

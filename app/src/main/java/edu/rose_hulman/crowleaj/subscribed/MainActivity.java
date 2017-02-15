@@ -122,6 +122,12 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mCache.writeSubscriptions(mSubscriptions);
+    }
+
     public void switchToSubsciptionsFragment() {
         if (mSubscriptionsFrag == null) {
             if (splashShown == true) {
@@ -367,5 +373,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public ArrayList<Subscription> getAllSubs() {
         return mSubscriptionsFrag.mAdapter.getSubscriptions();
+    }
+
+    @Override
+    public ArrayList<Subscription> getFilteredSubs() {
+        return mSubscriptionsFrag.mAdapter.filterSubs;
     }
 }
