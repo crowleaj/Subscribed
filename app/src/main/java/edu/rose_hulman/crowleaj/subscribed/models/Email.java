@@ -90,4 +90,6 @@ public class Email implements Comparable, Parcelable {
     public void setFlag(boolean bool) {
         isFlagged = bool;
     }
+
+
 }

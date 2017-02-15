@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
  * Use the {@link SpecificFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SpecificFragment extends android.support.v4.app.Fragment  {
+public class SpecificFragment extends android.support.v4.app.Fragment implements SearchView.OnQueryTextListener {
 
     private OnSpecificCallback mListener;
     public SpecificAdapter mAdapter;
@@ -117,6 +118,17 @@ public class SpecificFragment extends android.support.v4.app.Fragment  {
     public void onDestroy(){
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mAdapter.filter(newText.toLowerCase());
+        return true;
     }
 
     /**

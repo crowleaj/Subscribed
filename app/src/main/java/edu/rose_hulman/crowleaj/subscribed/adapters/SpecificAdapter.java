@@ -1,9 +1,11 @@
 package edu.rose_hulman.crowleaj.subscribed.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.fragments.SpecificFragment;
 import edu.rose_hulman.crowleaj.subscribed.Util;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
+import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 
 /**
  * Created by barteeaj on 1/30/2017.
@@ -31,6 +36,9 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
     private Context mContext;
     private View mView;
     private RecyclerView mRecycler;
+    private ArrayList<Email> filterSubs = new ArrayList<>();
+    public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
+
 
     public SpecificAdapter(ArrayList<Email> m, SpecificFragment.OnSpecificCallback callBack,
                            SpecificFragment.OnDeleteCallback deleteCallback, Context context, View view, RecyclerView list) {
@@ -121,6 +129,41 @@ public class SpecificAdapter extends RecyclerView.Adapter<SpecificAdapter.ViewHo
         return emails.size();
     }
 
+    public void filter(final String newText) {
+
+        // Searching could be complex..so we will dispatch it to a different thread...
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                // Clear the filter list
+                filterSubs.clear();
+
+                // If there is no search value, then add all original list items to filter list
+                if (TextUtils.isEmpty(newText)) {
+                    filterSubs.addAll(emails);
+
+                } else {
+                    // Iterate in the original List and add it to filter list...
+                    for (Email item : emails) {
+                        //should find all emails that match the query
+                        matchingEmails = item.getMatchingEmails(newText.toLowerCase());
+                        if (matchingEmails.size() > 0)
+                            filterSubs.add(item);
+                    }
+                }
+                // Set on UI Thread
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Notify the List that the DataSet has changed...
+                        notifyDataSetChanged();
+                    }
+                });
+
+            }
+        }).start();
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mSubject;
         private WebView mBody;

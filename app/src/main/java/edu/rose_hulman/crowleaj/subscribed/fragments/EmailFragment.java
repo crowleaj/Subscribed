@@ -22,7 +22,7 @@ import edu.rose_hulman.crowleaj.subscribed.models.Email;
  * Use the {@link EmailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EmailFragment extends android.support.v4.app.Fragment {
+public class EmailFragment extends android.support.v4.app.Fragment  {
     private static final String ARG_PARAM = "email";
 
     private OnFragmentInteractionListener mListener;
