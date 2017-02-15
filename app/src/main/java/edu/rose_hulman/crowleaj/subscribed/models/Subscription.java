@@ -21,6 +21,7 @@ public class Subscription implements Comparable, Parcelable {
     public int clicks;
     Boolean favorited;
     boolean aboveThresh;
+    boolean blackList;
 
     public Subscription(String subTitle) {
         title = subTitle;
@@ -32,6 +33,7 @@ public class Subscription implements Comparable, Parcelable {
         clicks = in.readInt();
         favorited = false;
         aboveThresh = false;
+        blackList = false;
     }
 
     public static final Creator<Subscription> CREATOR = new Creator<Subscription>() {
@@ -99,7 +101,8 @@ public class Subscription implements Comparable, Parcelable {
     public Boolean isFavorited() {
         return favorited;
     }
-
+    public Boolean isBlackListed() {return blackList;}
+    public Boolean setBlackListed(boolean bool) {return blackList = bool;}
     public boolean setFavorited(boolean bool) {
         return favorited = bool;
     }

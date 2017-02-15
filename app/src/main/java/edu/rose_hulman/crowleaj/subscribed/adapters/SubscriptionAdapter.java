@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.api.services.gmail.model.Message;
 import com.google.gson.Gson;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.rose_hulman.crowleaj.subscribed.MainActivity;
 import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.fragments.SubscriptionsFragment;
 import edu.rose_hulman.crowleaj.subscribed.models.Email;
@@ -48,6 +50,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private SubscriptionsFragment.Callback mCallback;
     public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
     private int mThresh;
+    public List<Subscription> blackList = new ArrayList<>();
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSubscription;
@@ -99,6 +102,19 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             @Override
             public void onClick(View v) {
                 mCallback.Callback(mSubscriptions.get(position).getEmails());
+            }
+        });
+        holder.mSubView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mSubscriptions.get(position).setBlackListed(true);
+                Toast.makeText(mContext, "Just blacklisted "+mSubscriptions.get(position).getTitle(),Toast.LENGTH_LONG).show();
+
+                blackList.add(mSubscriptions.get(position));
+                mSubscriptions.remove(position);
+                notifyDataSetChanged();
+                Log.d("Toast", "onLongClick:"+ blackList.size());
+                return true;
             }
         });
         holder.mfavoritebox.setChecked(mSubscriptions.get(position).isFavorited());
