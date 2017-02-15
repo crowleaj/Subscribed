@@ -98,14 +98,14 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.mSubscription.setText(mSubscriptions.get(position).getTitle());
-        holder.mSubscriptionCount.setText(mSubscriptions.get(position).getSize() + "");
-        holder.mSubscriptionPreview.setText(mSubscriptions.get(position).getNewestSubject());
-        holder.mSubscriptionDate.setText(mSubscriptions.get(position).getDateString());
+        holder.mSubscription.setText(filterSubs.get(position).getTitle());
+        holder.mSubscriptionCount.setText(filterSubs.get(position).getSize() + "");
+        holder.mSubscriptionPreview.setText(filterSubs.get(position).getNewestSubject());
+        holder.mSubscriptionDate.setText(filterSubs.get(position).getDateString());
         holder.mSubView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallback.Callback(mSubscriptions.get(position).getEmails());
+                mCallback.Callback(filterSubs.get(position).getEmails());
             }
         });
         holder.mSubView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -141,7 +141,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     @Override
     public int getItemCount() {
-        return mSubscriptions.size();
+        return filterSubs.size();
     }
 
     public ArrayList<Subscription> getSubscriptions() {
@@ -164,7 +164,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
                 // If there is no search value, then add all original list items to filter list
                 if (TextUtils.isEmpty(newText)) {
-
                     filterSubs.addAll(mSubscriptions);
 
                 } else {
@@ -172,6 +171,8 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                     for (Subscription item : mSubscriptions) {
                         //should find all emails that match the query
                         matchingEmails = item.getMatchingEmails(newText.toLowerCase());
+                        if (matchingEmails.size() > 0)
+                            filterSubs.add(item);
                     }
                 }
                 // Set on UI Thread
@@ -185,6 +186,10 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
             }
         }).start();
+    }
+
+    public void addToFilter() {
+
     }
 
     public void updateFilter(Subscription subscription) {
