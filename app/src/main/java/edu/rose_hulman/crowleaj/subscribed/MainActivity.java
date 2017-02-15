@@ -211,13 +211,11 @@ public class MainActivity extends AppCompatActivity
             switchTo = new SubscriptionsFragment();
         } else if (id == R.id.nav_gallery) {
             switchTo = new AboutFragment();
-        } else if (id == R.id.nav_blacklist) {
+        } else   {
             switchTo = new BlackListFragment();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
+
+
 
 
         if(switchTo!=null){
