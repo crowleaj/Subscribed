@@ -17,8 +17,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="68dp">
 
             <ImageView
                 android:id="@+id/image_view_Crowley"
@@ -58,9 +57,11 @@
         <TextView
             android:id="@+id/text_view"
             android:layout_width="match_parent"
-            android:layout_height="356dp"
+            android:layout_height="match_parent"
             android:text="@string/about_fragment_text"
-            android:textSize="24sp" />
+            android:textSize="20sp"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="bold"/>
     </LinearLayout>
 
 </FrameLayout>

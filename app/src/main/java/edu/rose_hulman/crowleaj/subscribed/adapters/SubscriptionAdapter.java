@@ -50,7 +50,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private SubscriptionsFragment.Callback mCallback;
     public List<Email> matchingEmails = Collections.synchronizedList(new ArrayList<Email>());
     private int mThresh;
-    public List<Subscription> blackList = new ArrayList<>();
+    public ArrayList<Subscription> blackList = new ArrayList<>();
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSubscription;
@@ -134,6 +134,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
 
+
     @Override
     public int getItemCount() {
         return (null != filterSubs ? filterSubs.size() : 0);
@@ -141,6 +142,10 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
 
     public ArrayList<Subscription> getSubscriptions() {
         return mSubscriptions;
+    }
+
+    public ArrayList<Subscription> getBlackList() {
+        return blackList;
     }
 
     public void filter(final String newText) {

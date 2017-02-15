@@ -8,8 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.adapters.BlackListAdapter;
+import edu.rose_hulman.crowleaj.subscribed.models.Subscription;
 
 /**
  * A fragment representing a list of Items.
@@ -35,6 +39,7 @@ public class BlackListFragment extends android.support.v4.app.Fragment {
         Bundle args = new Bundle();
        // args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -49,15 +54,13 @@ public class BlackListFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.content_blacklist, container, false);
+        View view = inflater.inflate(R.layout.fragment_blacklist, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new BlackListAdapter(mListener));
-        }
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_blacklist);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(new BlackListAdapter(mListener, mListener.onBlackListInteraction(),mListener.getAllSubs()));
         return view;
     }
 
@@ -90,6 +93,7 @@ public class BlackListFragment extends android.support.v4.app.Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnBlackListCallback {
-        void onBlackListInteraction();
+        ArrayList<Subscription> onBlackListInteraction();
+        ArrayList<Subscription> getAllSubs();
     }
 }

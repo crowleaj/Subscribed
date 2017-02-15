@@ -349,7 +349,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBlackListInteraction() {
+    public ArrayList<Subscription> onBlackListInteraction() {
+        return mSubscriptionsFrag.mAdapter.getBlackList();
+    }
 
+    @Override
+    public ArrayList<Subscription> getAllSubs() {
+        return mSubscriptionsFrag.mAdapter.getSubscriptions();
     }
 }
