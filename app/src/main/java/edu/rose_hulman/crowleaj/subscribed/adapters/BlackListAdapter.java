@@ -8,22 +8,15 @@ import android.widget.TextView;
 
 import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.fragments.BlackListFragment;
-import edu.rose_hulman.crowleaj.subscribed.fragments.ItemFragment.OnListFragmentInteractionListener;
-import edu.rose_hulman.crowleaj.subscribed.fragments.dummy.DummyContent.DummyItem;
-
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class BlackListAdapter extends RecyclerView.Adapter<BlackListAdapter.ViewHolder> {
 
     private final BlackListFragment.OnBlackListCallback mListener;
 
-    public BlackListAdapter() {
-
+    public BlackListAdapter(BlackListFragment.OnBlackListCallback callback) {
+        mListener = callback;
     }
 
     @Override

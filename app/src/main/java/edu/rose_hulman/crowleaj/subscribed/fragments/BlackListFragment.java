@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import edu.rose_hulman.crowleaj.subscribed.R;
 import edu.rose_hulman.crowleaj.subscribed.adapters.BlackListAdapter;
-import edu.rose_hulman.crowleaj.subscribed.fragments.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.
@@ -57,7 +56,7 @@ public class BlackListFragment extends android.support.v4.app.Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new BlackListAdapter());
+            recyclerView.setAdapter(new BlackListAdapter(mListener));
         }
         return view;
     }
@@ -91,6 +90,6 @@ public class BlackListFragment extends android.support.v4.app.Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnBlackListCallback {
-        void onBlackListInteraction(DummyItem item);
+        void onBlackListInteraction();
     }
 }

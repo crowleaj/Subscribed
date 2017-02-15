@@ -35,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import edu.rose_hulman.crowleaj.subscribed.fragments.AboutFragment;
+import edu.rose_hulman.crowleaj.subscribed.fragments.BlackListFragment;
 import edu.rose_hulman.crowleaj.subscribed.fragments.EmailFragment;
 import edu.rose_hulman.crowleaj.subscribed.fragments.SpecificFragment;
 import edu.rose_hulman.crowleaj.subscribed.fragments.SplashFragment;
@@ -48,7 +49,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SubscriptionsFragment.Callback, SpecificFragment.OnSpecificCallback, SplashFragment.AccountChooser,
-        EasyPermissions.PermissionCallbacks, EmailFragment.OnFragmentInteractionListener, SpecificFragment.OnDeleteCallback {
+        EasyPermissions.PermissionCallbacks, EmailFragment.OnFragmentInteractionListener, SpecificFragment.OnDeleteCallback, BlackListFragment.OnBlackListCallback {
 
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -210,9 +211,8 @@ public class MainActivity extends AppCompatActivity
             switchTo = new SubscriptionsFragment();
         } else if (id == R.id.nav_gallery) {
             switchTo = new AboutFragment();
-
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_blacklist) {
+            switchTo = new BlackListFragment();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -346,5 +346,10 @@ public class MainActivity extends AppCompatActivity
     public void onDelete(Email email) {
         Log.d("TEst", "TO DELETE ");
         mManager.onDeleteEmail(email, mAccountName);
+    }
+
+    @Override
+    public void onBlackListInteraction() {
+
     }
 }

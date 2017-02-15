@@ -8,7 +8,7 @@
             android:title="@string/subcriptions" />
 
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_blacklist"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/blackList" />
         <item
