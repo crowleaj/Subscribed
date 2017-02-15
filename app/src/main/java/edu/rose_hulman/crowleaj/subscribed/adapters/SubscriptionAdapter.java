@@ -87,6 +87,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         mThresh = thresh;
         blackList = black;
         Collections.sort(mSubscriptions);
+        Collections.sort(filterSubs);
     }
 
 
@@ -133,12 +134,13 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.mfavoritebox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSubscriptions.get(position).setFavorited(!mSubscriptions.get(position).isFavorited());
+                filterSubs.get(position).setFavorited(!filterSubs.get(position).isFavorited());
                 Collections.sort(mSubscriptions);
+                Collections.sort(filterSubs);
                 notifyDataSetChanged();
             }
         });
-        if (mSubscriptions.get(position).getSize() >= mThresh) {
+        if (filterSubs.get(position).getSize() >= mThresh) {
             holder.mSubView.setCardBackgroundColor(mContext.getResources().getColor(R.color.aboveThreshold));
         } else {
             holder.mSubView.setCardBackgroundColor(mContext.getResources().getColor(R.color.cardview_dark_background));
